@@ -5,10 +5,10 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/notifications"
+            android:id="@+id/account"
             android:icon="@drawable/round_notifications_24"
-            android:iconTint="#514E4E"
-            android:title="Notifications"
+            android:iconTint="#FF6D00"
+            android:title="Account"
             app:showAsAction="always"
             />
 

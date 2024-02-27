@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import io.github.junrdev.sage.R
 import io.github.junrdev.sage.activities.fragments.UploadDocuments
 import io.github.junrdev.sage.activities.fragments.UploadImages
-import io.github.junrdev.sage.model.SelectedItem
 
 class Upload : AppCompatActivity() {
 
@@ -26,5 +25,11 @@ class Upload : AppCompatActivity() {
         val uploadImages = Intent(this, UploadDocuments::class.java)
         uploadImages.putExtra("type", "gallery")
         startActivity(uploadImages)
+    }
+
+    fun openUploadCamera(view: View) {
+        val openCamera = Intent(this, UploadImages::class.java)
+        openCamera.putExtra("type", "camera")
+        startActivity(openCamera)
     }
 }
