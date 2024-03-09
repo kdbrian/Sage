@@ -127,12 +127,8 @@ class DownloadsRecyclerAdaper(
         private fun updateFileInfo(fileItem: FileItem) {
             filesmetadata.child(fileItem.fileId)
                 .updateChildren(mapOf(Pair("downloads", ++fileItem.downloads)))
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful && task.isComplete) {
-
-                    }
+                .addOnCompleteListener {
                 }.addOnFailureListener {
-                    Log.d(TAG, "updateFileInfo: Failed ${it.localizedMessage}")
                 }
         }
 
