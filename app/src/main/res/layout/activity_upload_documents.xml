@@ -25,6 +25,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/filesRecycler"
             android:layout_width="match_parent"
+            tools:itemCount="3"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
