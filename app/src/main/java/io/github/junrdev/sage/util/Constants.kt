@@ -12,12 +12,13 @@ object Constants {
 
     val auth = FirebaseAuth.getInstance()
 
-    val usersmetadata = FirebaseFirestore.getInstance().collection("umetadata")
-    val filesmetadata = FirebaseDatabase.getInstance().getReference("fmetadata")
+    val usersmetadata = FirebaseFirestore.getInstance().collection("umetadata-prev1")
+    val favours = FirebaseFirestore.getInstance().collection("favourites-prev1")
+    val filesmetadata = FirebaseDatabase.getInstance().getReference("fmetadata-prev1")
 
-    val filesblob = FirebaseStorage.getInstance().getReference("blob/sagefblob")
+    val filesblob = FirebaseStorage.getInstance().getReference("blob/sagefblob-prev1")
     val fileStorage = FirebaseStorage.getInstance()
-    val usersblob = FirebaseStorage.getInstance().getReference("blob/sageublob")
+    val usersblob = FirebaseStorage.getInstance().getReference("blob/sageublob-prev1")
 
     val IMAGE_PICK_CODE = 111
     val FILE_PICK_CODE = 222

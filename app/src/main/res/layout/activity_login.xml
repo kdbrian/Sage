@@ -121,16 +121,15 @@
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/signInProgress"
-                android:layout_margin="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/sign"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
                 android:backgroundTint="@color/white"
-                android:backgroundTintMode="multiply"
-                android:indeterminateTint="@color/white"
-                />
+                android:indeterminateTint="@color/white" />
 
         </RelativeLayout>
 

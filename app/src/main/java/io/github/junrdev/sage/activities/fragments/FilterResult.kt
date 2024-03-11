@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.junrdev.sage.R
 import io.github.junrdev.sage.adapter.DownloadsRecyclerAdaper
+import io.github.junrdev.sage.model.Favourite
 import io.github.junrdev.sage.model.FileItem
 import io.github.junrdev.sage.util.Constants
+import io.github.junrdev.sage.util.Constants.auth
 import io.github.junrdev.sage.util.Constants.favs
 
 private const val TAG = "FilterResult"
@@ -67,6 +69,14 @@ class FilterResult : AppCompatActivity() {
 
             toolbar.title = "Favourites"
             toolbar.subtitle = "Your Saved Documents"
+            Constants.favours.whereEqualTo("uid", auth.uid)
+                .get()
+                .addOnCompleteListener {
+                    if (it.isSuccessful && it.isComplete){
+                        it.result.documents.forEach { doc ->
+                        }
+                    }
+                }.addOnFailureListener { e -> Log.d(TAG, "onCreate: ${e.localizedMessage}") }
             Log.d(TAG, "onCreate: Favs $favs")
             filesRecycler.adapter = DownloadsRecyclerAdaper(applicationContext, favs)
         }

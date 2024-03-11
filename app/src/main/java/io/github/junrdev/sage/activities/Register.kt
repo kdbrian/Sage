@@ -29,9 +29,7 @@ class Register : AppCompatActivity() {
         email = findViewById(R.id.email)
         password = findViewById(R.id.password)
 
-        if (auth.currentUser == null)
-            startActivity(Intent(this, Register::class.java))
-        else
+        if (auth.currentUser != null)
             startActivity(Intent(this, HomeScreen::class.java))
 
         signUpBtn.setOnClickListener {

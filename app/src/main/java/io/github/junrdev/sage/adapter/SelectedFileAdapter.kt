@@ -30,26 +30,10 @@ class SelectedFileAdapter(
 
         fun bind(selectedItem: SelectedItem, onRemove: () -> Unit, onEdit: () -> Unit) {
             title.text = selectedItem.fname
-            var deleteNotify = false
             remove.setOnClickListener {
-
-                deleteNotify = true
-                remove.visibility = View.GONE
-                recycle.visibility = View.VISIBLE
-
+                onRemove()
                 Toast.makeText(context, "File will be removed after 3 seconds. You can recycle until then", Toast.LENGTH_SHORT).show()
 
-                recycle.setOnClickListener {
-                    deleteNotify = false
-                    remove.visibility = View.VISIBLE
-                    recycle.visibility = View.GONE
-                }
-
-
-                android.os.Handler().postDelayed({
-                    if (deleteNotify)
-                        onRemove()
-                },2500)
             }
 
             item.setOnClickListener { onEdit() }

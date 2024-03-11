@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CheckBox
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -60,7 +61,9 @@ class UploadDocuments : AppCompatActivity() {
     }
 
     private fun showBottomDialog(position: Int) {
+
         val bottomSheetDialog = BottomSheetDialog(this)
+
         val cur = selectedFiles[position]
         Log.d(TAG, "onBindViewHolder: $cur")
         bottomSheetDialog.setContentView(R.layout.editselecteditemdetailsbottomsheet)
@@ -69,13 +72,29 @@ class UploadDocuments : AppCompatActivity() {
         title?.text = selectedFiles[position].fname
 
 
-        val bio = bottomSheetDialog.findViewById<CheckBox>(R.id.biology)
-        val maths = bottomSheetDialog.findViewById<CheckBox>(R.id.maths)
-        val ss = bottomSheetDialog.findViewById<CheckBox>(R.id.socialScience)
-        val research = bottomSheetDialog.findViewById<CheckBox>(R.id.research)
-        val literature = bottomSheetDialog.findViewById<CheckBox>(R.id.literature)
-        val programming = bottomSheetDialog.findViewById<CheckBox>(R.id.programming)
+        val bio = bottomSheetDialog.findViewById<RadioButton>(R.id.biology)
+        val maths = bottomSheetDialog.findViewById<RadioButton>(R.id.maths)
+        val ss = bottomSheetDialog.findViewById<RadioButton>(R.id.socialScience)
+        val research = bottomSheetDialog.findViewById<RadioButton>(R.id.research)
+        val literature = bottomSheetDialog.findViewById<RadioButton>(R.id.literature)
+        val programming = bottomSheetDialog.findViewById<RadioButton>(R.id.programming)
         val save = bottomSheetDialog.findViewById<CardView>(R.id.saveItem)
+
+        if (!cur.categories.isEmpty())
+            for (cat in cur.categories) {
+                if (cat == "Biology" )
+                    bio?.isChecked = true
+                if (cat == "Maths" )
+                    maths?.isChecked = true
+                if (cat == "Social Science" )
+                    ss?.isChecked = true
+                if (cat == "Research" )
+                    research?.isChecked = true
+                if (cat == "Literature" )
+                    literature?.isChecked = true
+                if (cat == "Programming" )
+                    programming?.isChecked = true
+            }
 
         save?.setOnClickListener {
             if (bio?.isChecked!!)
@@ -92,9 +111,9 @@ class UploadDocuments : AppCompatActivity() {
                 cur.categories.add("Programming")
 
             bottomSheetDialog.dismiss()
-
-            bottomSheetDialog.show()
         }
+
+        bottomSheetDialog.show()
     }
 
     fun openFileSelector(view: View) {

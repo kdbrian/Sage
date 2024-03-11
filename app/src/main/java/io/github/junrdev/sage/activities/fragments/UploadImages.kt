@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CheckBox
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +29,7 @@ import io.github.junrdev.sage.adapter.SelectedImagesRecyclerAdapter
 import io.github.junrdev.sage.model.FileItem
 import io.github.junrdev.sage.model.SelectedItem
 import io.github.junrdev.sage.util.Constants
+import io.github.junrdev.sage.util.Constants.auth
 import io.github.junrdev.sage.util.Constants.filesblob
 import io.github.junrdev.sage.util.Constants.filesmetadata
 
@@ -68,12 +70,12 @@ class UploadImages : AppCompatActivity() {
         val title = bottomSheetDialog.findViewById<TextView>(R.id.fileTitle)
         title?.text = selectedImages[position].fname
 
-        val bio = bottomSheetDialog.findViewById<CheckBox>(R.id.biology)
-        val maths = bottomSheetDialog.findViewById<CheckBox>(R.id.maths)
-        val ss = bottomSheetDialog.findViewById<CheckBox>(R.id.socialScience)
-        val research = bottomSheetDialog.findViewById<CheckBox>(R.id.research)
-        val literature = bottomSheetDialog.findViewById<CheckBox>(R.id.literature)
-        val programming = bottomSheetDialog.findViewById<CheckBox>(R.id.programming)
+        val bio = bottomSheetDialog.findViewById<RadioButton>(R.id.biology)
+        val maths = bottomSheetDialog.findViewById<RadioButton>(R.id.maths)
+        val ss = bottomSheetDialog.findViewById<RadioButton>(R.id.socialScience)
+        val research = bottomSheetDialog.findViewById<RadioButton>(R.id.research)
+        val literature = bottomSheetDialog.findViewById<RadioButton>(R.id.literature)
+        val programming = bottomSheetDialog.findViewById<RadioButton>(R.id.programming)
         val save = bottomSheetDialog.findViewById<CardView>(R.id.saveItem)
 
         save?.setOnClickListener {
@@ -164,13 +166,6 @@ class UploadImages : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-//        if (selectedImages.isNotEmpty())
-    }
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.uploadmenu, menu)
         return super.onCreateOptionsMenu(menu)
@@ -180,72 +175,95 @@ class UploadImages : AppCompatActivity() {
 
         if (item.itemId == R.id.upload) {
 
-            Log.d(TAG, "onOptionsItemSelected: selected")
-            Log.d(TAG, "onOptionsItemSelected: selected ${item.itemId}")
+            if (auth.currentUser!!.isEmailVerified) {
+                Log.d(TAG, "onOptionsItemSelected: selected")
+                Log.d(TAG, "onOptionsItemSelected: selected ${item.itemId}")
 
-            if (selectedImages.isEmpty()) {
-                Toast.makeText(applicationContext, "No items selected.", Toast.LENGTH_SHORT).show()
-            } else {
-
-
-                selectedImages.forEachIndexed { index, image ->
-
-                    val task = filesblob.child(image.fname)
-
-                    task.putFile(image.uri)
-                        .addOnCompleteListener { upload ->
-                            if (upload.isComplete && upload.isSuccessful) {
-
-                                Log.d(TAG, "onOptionsItemSelected: ${upload.result}")
+                if (selectedImages.isEmpty()) {
+                    Toast.makeText(applicationContext, "No items selected.", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
 
 
-                                task.downloadUrl.addOnCompleteListener { url ->
+                    selectedImages.forEachIndexed { index, image ->
+
+                        val task = filesblob.child(image.fname)
+
+                        task.putFile(image.uri)
+                            .addOnCompleteListener { upload ->
+                                if (upload.isComplete && upload.isSuccessful) {
+
+                                    Log.d(TAG, "onOptionsItemSelected: ${upload.result}")
 
 
-                                    if (url.isComplete && url.isSuccessful) {
+                                    task.downloadUrl.addOnCompleteListener { url ->
 
-                                        val id = filesmetadata.push().key!!
-                                        val dlurl = "${url.result}"
 
-                                        Log.d(TAG, "onOptionsItemSelected: $dlurl")
-                                        filesmetadata.child(id)
-                                            .setValue(
-                                                FileItem(
-                                                    fileId = id,
-                                                    fileName = image.fname,
-                                                    fileType = "image",
-                                                    fileDownloadUrl = dlurl,
-                                                    categories = listOf("images"),
-                                                    filePreview = dlurl
+                                        if (url.isComplete && url.isSuccessful) {
+
+                                            val id = filesmetadata.push().key!!
+                                            val dlurl = "${url.result}"
+
+                                            Log.d(TAG, "onOptionsItemSelected: $dlurl")
+                                            filesmetadata.child(id)
+                                                .setValue(
+                                                    FileItem(
+                                                        fileId = id,
+                                                        fileName = image.fname,
+                                                        fileType = "image",
+                                                        fileDownloadUrl = dlurl,
+                                                        categories = listOf("images"),
+                                                        filePreview = dlurl
+                                                    )
                                                 )
-                                            )
-                                            .addOnCompleteListener { save ->
-                                                if (save.isComplete && save.isSuccessful) {
-                                                    selectedImages.remove(image)
-                                                    adapter.notifyItemRemoved(index)
+                                                .addOnCompleteListener { save ->
+                                                    if (save.isComplete && save.isSuccessful) {
+                                                        selectedImages.remove(image)
+                                                        adapter.notifyItemRemoved(index)
+                                                    }
+                                                }.addOnFailureListener {
+                                                    Log.d(
+                                                        TAG,
+                                                        "onOptionsItemSelected: ${it.localizedMessage}"
+                                                    )
                                                 }
-                                            }.addOnFailureListener {
-                                                Log.d(
-                                                    TAG,
-                                                    "onOptionsItemSelected: ${it.localizedMessage}"
-                                                )
-                                            }
+                                        }
                                     }
+
                                 }
 
                             }
+                            .addOnFailureListener {
+                                Log.d(TAG, "onOptionsItemSelected: ${it.localizedMessage}")
+                            }
 
-                        }
-                        .addOnFailureListener {
-                            Log.d(TAG, "onOptionsItemSelected: ${it.localizedMessage}")
-                        }
+                    }
 
                 }
+            } else
+                Toast.makeText(applicationContext, "Please verify email first!", Toast.LENGTH_SHORT)
+                    .show()
 
-            }
+        } else if (item.itemId == R.id.verifyEmail) {
+
+            if (auth.currentUser!!.isEmailVerified) {
+                item.isVisible = false
+                Toast.makeText(applicationContext, "Email verified!", Toast.LENGTH_SHORT).show();
+            } else
+                auth.currentUser!!.sendEmailVerification().addOnCompleteListener { t ->
+                    if (t.isComplete && t.isSuccessful) Toast.makeText(
+                        applicationContext,
+                        "Check your mailbox for instructions.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }.addOnFailureListener { e ->
+                    Log.d(TAG, "onOptionsItemSelected: ${e.localizedMessage}")
+                }
 
         }
         return super.onOptionsItemSelected(item)
+
+
     }
 
     private fun getFileName(uri: Uri): String {
