@@ -1,25 +1,35 @@
 package io.github.junrdev.sage.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import io.github.junrdev.sage.R
 import io.github.junrdev.sage.SplashScreen
 import io.github.junrdev.sage.activities.fragments.FilterResult
+import io.github.junrdev.sage.model.Favourite
+import io.github.junrdev.sage.util.Constants
 import io.github.junrdev.sage.util.Constants.auth
+import io.github.junrdev.sage.util.Constants.favours
 import io.github.junrdev.sage.util.Constants.favs
 
+private const val TAG = "HomeScreen"
+
 class HomeScreen : AppCompatActivity() {
+
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_screen)
-
-        Toast.makeText(applicationContext, "In", Toast.LENGTH_SHORT).show()
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
     }
 
@@ -66,5 +76,34 @@ class HomeScreen : AppCompatActivity() {
 
     fun openHowToSection(view: View) {
         Toast.makeText(applicationContext, "Under Implementation", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if (favs.isNotEmpty()) {
+            favs.forEach {
+                val id = favours.document().id
+                favours.document(id)
+                    .set(Favourite(id, auth.uid!!, it.fileDownloadUrl, it.fileName))
+                    .addOnCompleteListener {
+                        if (it.isSuccessful && it.isComplete)
+                            Log.d(TAG, "onBackPressed: added fav")
+                    }.addOnFailureListener { e ->
+                        Log.d(
+                            TAG,
+                            "onBackPressed: ${e.localizedMessage}"
+                        )
+                    }
+            }
+        }
+    }
+
+    fun sendFeedback(view: View) {
+        val url =
+            "https://docs.google.com/forms/d/e/1FAIpQLSc9DTiMHrTNeOT95hrjwc5ybN1Cj_X72wtYPRj2-uhI3RJNiQ/viewform?usp=sf_link"
+        val form = Intent(Intent.ACTION_VIEW)
+        form.data = Uri.parse(url)
+        startActivity(form)
     }
 }

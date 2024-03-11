@@ -10,6 +10,7 @@
 
 
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="8dp"
@@ -19,42 +20,6 @@
         app:subtitleTextColor="@color/app_grey"
         app:title="Welcome back!"
         app:titleTextColor="@color/white" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/addsCard"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_margin="10dp"
-        android:elevation="5dp"
-        app:cardBackgroundColor="@color/colorPrimary"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="20dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="20dp"
-                android:src="@drawable/baseline_ads_click_24"
-                app:tint="@color/white" />
-
-            <TextClock
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:textSize="20sp"
-		android:layout_margin="20dp"
-                android:textColor="@color/white"
-                />
-
-        </RelativeLayout>
-
-    </androidx.cardview.widget.CardView>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -68,142 +33,205 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/addsCard"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_margin="15dp"
+                android:elevation="5dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="20dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:alpha="0.7"
+                        android:background="@color/colorPrimary" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="20dp"
+                            android:src="@drawable/baseline_ads_click_24"
+                            app:tint="@color/white" />
+
+                        <TextClock
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_margin="20dp"
+                            android:letterSpacing="1"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:letterSpacing="2"
+                            android:text="Beta"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:onClick="openDownloads"
                 android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:drawableEnd="@drawable/round_arrow_forward_ios_24"
-                    android:drawablePadding="5dp"
-                    android:drawableTint="#F8BBD0"
-                    android:padding="5dp"
-                    android:text="Download files"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/white"
-                    android:padding="10dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:onClick="openUploads"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableEnd="@drawable/round_arrow_forward_ios_24"
-                    android:drawablePadding="5dp"
-                    android:drawableTint="#F8BBD0"
-                    android:padding="5dp"
-                    android:text="Upload"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
+                    android:onClick="openDownloads"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:drawableEnd="@drawable/round_arrow_forward_ios_24"
+                        android:drawablePadding="5dp"
+                        android:drawableTint="#F8BBD0"
+                        android:padding="5dp"
+                        android:text="Download files"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_margin="10dp"
+                        android:background="@color/white"
+                        android:padding="10dp" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/white"
-                    android:padding="10dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:onClick="openFavourites"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableEnd="@drawable/round_arrow_forward_ios_24"
-                    android:drawablePadding="5dp"
-                    android:drawableTint="#F8BBD0"
-                    android:padding="5dp"
-                    android:text="Favourites"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
+                    android:onClick="openUploads"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:drawableEnd="@drawable/round_arrow_forward_ios_24"
+                        android:drawablePadding="5dp"
+                        android:drawableTint="#F8BBD0"
+                        android:padding="5dp"
+                        android:text="Upload"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_margin="10dp"
+                        android:background="@color/white"
+                        android:padding="10dp" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/white"
-                    android:padding="10dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:onClick="openHowToSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:orientation="vertical">
-
-
-                <TextView
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableEnd="@drawable/round_arrow_forward_ios_24"
-                    android:drawablePadding="5dp"
-                    android:drawableTint="#F8BBD0"
-                    android:padding="5dp"
-                    android:text="Ask AI"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
+                    android:onClick="openFavourites"
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:drawableEnd="@drawable/round_arrow_forward_ios_24"
+                        android:drawablePadding="5dp"
+                        android:drawableTint="#F8BBD0"
+                        android:padding="5dp"
+                        android:text="Favourites"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_margin="10dp"
+                        android:background="@color/white"
+                        android:padding="10dp" />
 
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:orientation="vertical">
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:drawableEnd="@drawable/round_arrow_forward_ios_24"
-                    android:drawablePadding="5dp"
-                    android:drawableTint="#F8BBD0"
-                    android:padding="5dp"
-                    android:text="Share resources"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/white"
-                    android:padding="10dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="sendFeedback"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:drawableEnd="@drawable/round_arrow_forward_ios_24"
+                        android:drawablePadding="5dp"
+                        android:drawableTint="#F8BBD0"
+                        android:padding="5dp"
+                        android:text="Send Feedback"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_margin="10dp"
+                        android:background="@color/white"
+                        android:padding="10dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="openHowToSection"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:drawableEnd="@drawable/round_arrow_forward_ios_24"
+                        android:drawablePadding="5dp"
+                        android:drawableTint="#F8BBD0"
+                        android:padding="5dp"
+                        android:text="Ask AI"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
--->
         </LinearLayout>
+
     </ScrollView>
 
 </LinearLayout>

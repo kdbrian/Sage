@@ -20,12 +20,14 @@ class Login : AppCompatActivity() {
     private lateinit var email: TextInputEditText
     private lateinit var signInProgress: CircularProgressIndicator
     private lateinit var createAccount: TextView
+    private lateinit var sign: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         password = findViewById(R.id.password)
         createAccount = findViewById(R.id.createAccount)
+        sign = findViewById(R.id.sign)
         email = findViewById(R.id.email)
         signInProgress = findViewById(R.id.signInProgress)
 
@@ -45,11 +47,13 @@ class Login : AppCompatActivity() {
                 .show()
         else {
             signInProgress.visibility = View.VISIBLE
+            sign.visibility = View.GONE
             auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString())
                 .addOnCompleteListener {
                     if (it.isSuccessful && it.isComplete) {
                         signInProgress.visibility = View.GONE
-                        startActivity(Intent(applicationContext, HomeScreen::class.java))
+                        sign.visibility = View.VISIBLE
+                        startActivity(Intent(this, HomeScreen::class.java))
                         finish()
                     }
                 }.addOnFailureListener {
@@ -57,6 +61,10 @@ class Login : AppCompatActivity() {
                     Log.d(TAG, "onCreate: ${it.localizedMessage}")
                 }
         }
+    }
+
+    fun openRegister(view: View) {
+        startActivity(Intent(this, Register::class.java))
     }
 }
 
