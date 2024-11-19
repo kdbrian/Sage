@@ -12,7 +12,7 @@ plugins {
 
 android {
     namespace = "io.github.junrdev.sage"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "io.github.junrdev.sage"
@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore)
+
+    //testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,5 +83,14 @@ dependencies {
 
     //gemini
     implementation(libs.generativeai)
+
+
+    // Unit Testing
+//    testImplementation("org.mockito:mockito-core:4.8.1")
+//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // Android Instrumented Tests
+//    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+//    androidTestImplementation("org.mockito:mockito-android:4.8.1")
 
 }
