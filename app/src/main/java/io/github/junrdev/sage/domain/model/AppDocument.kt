@@ -8,11 +8,11 @@ open class AppDocument(
 )
 
 data class FirebaseUploadedDocument(
-    val documentId: String,
+    val documentId: String="",
     val topic: List<String> = emptyList(), //CS, Math, Bio...
-    val title: String,
-    val description: String,
-    val downloadUrl: String,
+    val title: String="",
+    val description: String="",
+    val downloadUrl: String="",
 
     //ai fields
     val topicWithAi: Boolean = false,
@@ -22,7 +22,7 @@ data class FirebaseUploadedDocument(
     val aiSummary: String? = null,
 
     val downloadCount: Long = 0L,
-    val owner: String,//ref to user
+    val owner: String="",//ref to user
 ) : AppDocument()
 
 data class FirebaseUploadDocumentDto(

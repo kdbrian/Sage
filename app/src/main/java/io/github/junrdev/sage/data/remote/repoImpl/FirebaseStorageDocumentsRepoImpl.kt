@@ -11,10 +11,14 @@ import com.google.firebase.storage.storage
 import io.github.junrdev.sage.domain.model.FirebaseUploadDocumentDto
 import io.github.junrdev.sage.domain.model.FirebaseUploadedDocument
 import io.github.junrdev.sage.domain.repo.FirebaseStorageDocumentsRepo
+import io.github.junrdev.sage.domain.repo.GenerativeAIRepo
+import io.github.junrdev.sage.util.Constants
 import kotlinx.coroutines.tasks.await
 import java.io.File
 
-class FirebaseStorageDocumentsRepoImpl : FirebaseStorageDocumentsRepo {
+class FirebaseStorageDocumentsRepoImpl(
+    val generativeAIRepo: GenerativeAIRepo
+) : FirebaseStorageDocumentsRepo {
 
     private val DOCUMENTS_UPLOAD_PATH = "Sage-documents-v1"
     private val DOCUMENTS_METADATA_PATH = "$DOCUMENTS_UPLOAD_PATH-metaInf"
@@ -104,33 +108,73 @@ class FirebaseStorageDocumentsRepoImpl : FirebaseStorageDocumentsRepo {
         }
     }
 
+    override suspend fun summarizeDocumentWithAi(path: String): Result<String> {
+        return try {
+            val feedback =
+                generativeAIRepo.generateContent("${Constants.DOCUMENT_SUMMARY_PROMPT} $path")
 
-    override suspend fun summarizeDocumentWithAi(onResult: (Result<String>) -> Unit) {
-        TODO("Not yet implemented")
+            when (feedback.isSuccess) {
+                true -> Result.success(feedback.getOrThrow())
+                false -> Result.success(feedback.exceptionOrNull()?.message.toString())
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun generateDocumentTopicWithAi(onResult: (Result<String>) -> Unit) {
-        TODO("Not yet implemented")
+    override suspend fun generateDocumentTopicWithAi(path: String): Result<String> {
+        return try {
+            val feedback =
+                generativeAIRepo.generateContent("${Constants.DOCUMENT_TOPIC_CATEGORIZING_PROMPT} $path")
+
+            when (feedback.isSuccess) {
+                true -> Result.success(feedback.getOrThrow())
+                false -> Result.success(feedback.exceptionOrNull()?.message.toString())
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun searchDocumentWithName(
-        name: String,
-        onResult: (Result<List<FirebaseUploadedDocument>>) -> Unit
-    ) {
-        TODO("Not yet implemented")
+    override suspend fun searchDocumentWithName(name: String): Result<List<FirebaseUploadedDocument>> {
+        return try {
+            val documents = DOCUMENTS_REFERENCE
+                .whereEqualTo("title", name)
+                .get()
+                .await()
+
+            if (documents.isEmpty)
+                Result.failure(Exception("Nothing matches the name provided."))
+            else {
+                val converted = documents.toObjects(FirebaseUploadedDocument::class.java)
+                Result.success(converted)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun searchDocumentWithTopic(
-        name: String,
-        onResult: (Result<List<FirebaseUploadedDocument>>) -> Unit
-    ) {
-        TODO("Not yet implemented")
+    override suspend fun searchDocumentWithTopic(name: String): Result<List<FirebaseUploadedDocument>> {
+        return try {
+            val documents = DOCUMENTS_REFERENCE
+                .whereArrayContains("topic", name)
+                .get()
+                .await()
+
+            if (documents.isEmpty)
+                Result.failure(Exception("Nothing matches the name provided."))
+            else {
+                val converted = documents.toObjects(FirebaseUploadedDocument::class.java)
+                Result.success(converted)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun searchDocumentWithDescriptionOrAiSummary(
-        name: String,
-        onResult: (Result<List<FirebaseUploadedDocument>>) -> Unit
-    ) {
-        TODO("Not yet implemented")
+    override suspend fun searchDocumentWithDescriptionOrAiSummary(name: String): Result<List<FirebaseUploadedDocument>> {
+        //TODO : impl later
+        return Result.success(emptyList())
     }
+
 }
