@@ -80,5 +80,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
 
+    //gemini
+    implementation(libs.generativeai)
 
 }
