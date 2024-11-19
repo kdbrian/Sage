@@ -4,18 +4,16 @@ interface FirebaseUserRepo {
 
     suspend fun registerUserWithEmailPassword(
         email: String,
-        password: String,
-        onResult: (Result<String>) -> Unit
-    )
+        password: String
+    ): Result<String>
 
     suspend fun loginUserWithEmailPassword(
         email: String,
-        password: String,
-        onResult: (Result<String>) -> Unit
-    )
+        password: String
+    ): Result<String>
 
-    suspend fun resetPasswordWithEmail(email: String, onResult: (Result<String>) -> Unit)
-    suspend fun verifyUserEmail(email: String, onResult: (Result<String>) -> Unit)
+    suspend fun resetPasswordWithEmail(email: String): Result<String>
+    suspend fun verifyUserEmail(email: String): Result<String>
     suspend fun logoutUser()
 
 }
