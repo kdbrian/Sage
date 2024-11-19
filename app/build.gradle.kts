@@ -6,6 +6,7 @@ plugins {
     //google services
     id("com.google.gms.google-services")
 
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 
 }
 
@@ -41,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -73,7 +75,7 @@ dependencies {
     implementation(libs.koin.compose.navigation)
 
     //firebase
-    implementation(libs.firebase.bom)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
 
 
