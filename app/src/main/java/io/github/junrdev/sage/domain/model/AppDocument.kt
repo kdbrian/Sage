@@ -1,5 +1,6 @@
 package io.github.junrdev.sage.domain.model
 
+import android.net.Uri
 import java.time.LocalDate
 
 open class AppDocument(
@@ -8,7 +9,7 @@ open class AppDocument(
 
 data class FirebaseUploadedDocument(
     val documentId: String,
-    val topic: String? = null, //CS, Math, Bio...
+    val topic: List<String> = emptyList(), //CS, Math, Bio...
     val title: String,
     val description: String,
     val downloadUrl: String,
@@ -23,3 +24,10 @@ data class FirebaseUploadedDocument(
     val downloadCount: Long,
     val owner: String,//ref to user
 ) : AppDocument()
+
+data class FirebaseUploadedDocumentDto(
+    val topic: List<String> = emptyList(), //CS, Math, Bio...
+    val title: String,
+    val description: String,
+    val uri : Uri
+)
