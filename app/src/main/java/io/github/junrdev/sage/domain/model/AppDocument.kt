@@ -21,11 +21,11 @@ data class FirebaseUploadedDocument(
     val summarizedWithAi: Boolean = false,
     val aiSummary: String? = null,
 
-    val downloadCount: Long,
+    val downloadCount: Long = 0L,
     val owner: String,//ref to user
 ) : AppDocument()
 
-data class FirebaseUploadedDocumentDto(
+data class FirebaseUploadDocumentDto(
     val topic: List<String> = emptyList(), //CS, Math, Bio...
     val title: String,
     val description: String,
