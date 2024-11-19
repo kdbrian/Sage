@@ -22,9 +22,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        val testRepo by inject<FirebaseStorageDocumentsRepo>()
-
         setContent {
             SageTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
