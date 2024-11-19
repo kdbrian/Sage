@@ -59,4 +59,8 @@ class FirebaseUserRepoImpl : FirebaseUserRepo {
         } else
             onResult(Result.failure(Exception("Please login first.")))
     }
+
+    override suspend fun logoutUser() {
+        auth.signOut()
+    }
 }

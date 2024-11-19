@@ -16,5 +16,6 @@ interface FirebaseUserRepo {
 
     suspend fun resetPasswordWithEmail(email: String, onResult: (Result<String>) -> Unit)
     suspend fun verifyUserEmail(email: String, onResult: (Result<String>) -> Unit)
+    suspend fun logoutUser()
 
 }
