@@ -1,6 +1,6 @@
 package io.github.junrdev.sage.domain.repo
 
-interface RemoteUserRepo {
+interface FirebaseUserRepo {
 
     suspend fun registerUserWithEmailPassword(
         email: String,
