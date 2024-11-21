@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.Favorite
@@ -56,6 +58,12 @@ import io.github.junrdev.sage.ui.theme.SageTheme
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
 
+    val horizontalHomeScrollState = rememberScrollState()
+
+    var searchQuery by remember { mutableStateOf("") }
+    val onSearch : () -> Unit = {}
+
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -69,6 +77,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 .padding(paddingValues)
                 .fillMaxSize()
                 .padding(12.dp)
+                .verticalScroll(state = horizontalHomeScrollState)
         ) {
 
 
@@ -120,7 +129,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     colors = CardDefaults.elevatedCardColors(containerColor = Color.Yellow),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text(text = "Search a topic", modifier = Modifier.padding(12.dp))
+                    Text(text = "Upload new", modifier = Modifier.padding(12.dp))
                 }
 
 
@@ -146,13 +155,16 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
 
             //search bar
-            var searchQuery by remember { mutableStateOf("") }
-            val onSearch : () -> Unit = {}
             Spacer(Modifier.height(16.dp))
             HomeSearchBar(searchQuery, onSearch)
 
 
             //display saves
+            Spacer(Modifier.height(16.dp))
+
+            Text(text = "Your History", style = MaterialTheme.typography.titleLarge)
+
+
         }
 
     }
@@ -254,7 +266,7 @@ fun HomeTopBar(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .border(width = 1.dp, color = Color.Gray, shape = CircleShape)
             ) {
-                Icon(imageVector = Icons.Rounded.Notifications, contentDescription = null)
+                Icon(imageVector = Icons.Rounded.Favorite, contentDescription = null)
             }
         }
     )
