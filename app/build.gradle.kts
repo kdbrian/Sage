@@ -16,6 +16,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    kotlin("plugin.serialization") version "2.2.0"
+
 }
 
 android {
@@ -119,4 +121,6 @@ dependencies {
     //extended icons
     implementation(libs.androidx.material.icons.extended)
 
+    //serialization
+    implementation(libs.kotlinx.serialization.json)
 }
