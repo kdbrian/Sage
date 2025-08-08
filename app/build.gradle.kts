@@ -127,7 +127,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     //datastore prefs
-    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.datastore.preferences)
 
     //accompanist permissions
     implementation(libs.accompanist.permissions)

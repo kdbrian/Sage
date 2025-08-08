@@ -2,6 +2,7 @@ package com.kdbrian.sage.di
 
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.dsl.module
 
 val firebaseModules = module {
@@ -10,5 +11,9 @@ val firebaseModules = module {
         FirebaseAnalytics.getInstance(get<Context>())
     }
 
+
+    single {
+        FirebaseFirestore.getInstance()
+    }
 
 }

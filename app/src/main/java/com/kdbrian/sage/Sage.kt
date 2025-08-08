@@ -4,6 +4,7 @@ import android.app.Application
 import com.kdbrian.sage.di.analyticsModule
 import com.kdbrian.sage.di.coreModules
 import com.kdbrian.sage.di.firebaseModules
+import com.kdbrian.sage.di.topicModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -24,7 +25,8 @@ class Sage : Application() {
             modules(
                 analyticsModule,
                 coreModules,
-                firebaseModules
+                firebaseModules,
+                topicModules,
             )
         }
     }
