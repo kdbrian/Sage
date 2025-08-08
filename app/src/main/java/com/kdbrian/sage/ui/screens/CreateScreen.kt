@@ -58,6 +58,7 @@ import com.kdbrian.sage.ui.theme.SageTheme
 import com.kdbrian.sage.util.FileUtils.getFileName
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateScreen() {
@@ -86,6 +87,7 @@ fun CreateScreen() {
     }
     val snackbarHostState = remember { SnackbarHostState() }
 
+
     val pickDocument = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) {
@@ -97,7 +99,6 @@ fun CreateScreen() {
             docUri = it
         }
     }
-
     val iconAndText by remember {
         derivedStateOf {
             if (docUri != Uri.EMPTY && docUri != null) {

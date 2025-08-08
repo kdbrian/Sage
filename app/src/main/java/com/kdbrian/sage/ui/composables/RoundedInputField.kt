@@ -14,6 +14,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kdbrian.sage.ui.theme.SageTheme
@@ -25,6 +26,7 @@ fun RoundedInputField(
     fieldState: TextFieldState = rememberTextFieldState(),
     onValueChange: ((String) -> Unit)? = null,
     placeholder: String = "Placeholder",
+    shape : Shape = RoundedCornerShape(24.dp),
     leadingIcon: (@Composable () -> Unit)? = null,
     keyBoardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -54,7 +56,7 @@ fun RoundedInputField(
         modifier = modifier,
         singleLine = singleLine,
         minLines = if (singleLine) 1 else 3,
-        shape = RoundedCornerShape(12.dp),
+        shape = shape,
         placeholder = {
             Text(text = placeholder, style = MaterialTheme.typography.labelMedium)
         },

@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter)
@@ -127,4 +128,9 @@ dependencies {
 
     //datastore prefs
     implementation(libs.androidx.datastore.preferences.core)
+
+    //accompanist permissions
+    implementation(libs.accompanist.permissions)
+
+
 }

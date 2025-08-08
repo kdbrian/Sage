@@ -78,7 +78,8 @@ fun LandingPage(
                             imageVector = Icons.Rounded.Search,
                             contentDescription = null
                         )
-                    }
+                    },
+
                 )
 
             }
