@@ -16,6 +16,7 @@ import com.kdbrian.sage.ui.theme.SageTheme
 @Composable
 fun CircularProfileAvatar(
     modifier: Modifier = Modifier,
+    size: Int = 50,
     imageUri: String? = null,
     onImageClick: () -> Unit = {}
 ) {
@@ -24,7 +25,7 @@ fun CircularProfileAvatar(
         onClick = onImageClick,
         shadowElevation = 3.dp,
         modifier = modifier
-            .requiredSize(50.dp),
+            .requiredSize((size).dp),
         shape = CircleShape
     ) {
         AsyncImage(

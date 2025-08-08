@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,8 @@ import com.kdbrian.sage.ui.theme.SageTheme
 @Composable
 fun CategoryItem(
     modifier: Modifier = Modifier,
+    color: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surface,
+    contentColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
     text: String = LoremIpsum(2).values.joinToString(),
     onClick: () -> Unit = {},
     shape: Shape = RoundedCornerShape(24.dp)
@@ -36,6 +39,8 @@ fun CategoryItem(
             .requiredWidthIn(min = 100.dp, max = 120.dp)
             .requiredHeightIn(min = 30.dp, max = 35.dp),
         shape = shape,
+        color = color,
+        contentColor = contentColor,
         onClick = onClick,
         shadowElevation = 2.dp
     ) {
@@ -47,15 +52,16 @@ fun CategoryItem(
         ) {
             BasicText(
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight(300),
+                    textAlign = TextAlign.Center
                 ),
                 autoSize = TextAutoSize.StepBased(
-                    minFontSize = 12.sp,
-                    maxFontSize = 16.sp,
-                    step = 1.sp
+                    minFontSize = 14.sp,
+                    maxFontSize = 18.sp,
+                    stepSize = 1.sp
                 ),
                 text = text,
-                modifier = Modifier
+                modifier = Modifier.padding(4.dp)
             )
         }
 
