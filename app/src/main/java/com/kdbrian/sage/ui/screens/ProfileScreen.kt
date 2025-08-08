@@ -1,7 +1,9 @@
 package com.kdbrian.sage.ui.screens
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +33,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +55,12 @@ import com.kdbrian.sage.ui.composables.RowButton
 fun ProfileScreen(
     navHostController: NavHostController
 ) {
+
+    var isLoggedIn by remember {
+        mutableStateOf(false)
+    }
+
+
     Scaffold(
         topBar = {
             Surface(
@@ -69,287 +81,312 @@ fun ProfileScreen(
                 )
             }
         }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .padding(it)
-                .padding(16.dp)
-            ,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier.padding(paddingValues),
         ) {
-
-            item {
-                Row(
-                    modifier = Modifier
-                    ,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-
-                    CircularProfileAvatar(
-                        size = 100,
-                    ) { }
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                        horizontalAlignment = Alignment.Start,
+            AnimatedContent(isLoggedIn) {
+                if (it) {
+                    LazyColumn(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 12.dp)
-                            .padding(6.dp)
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(text = "Joe Doe", style = MaterialTheme.typography.displaySmall)
-                        Text(
-                            text = "joedoe@dev.to",
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.Light
-                            )
-                        )
 
-
-                        val scrollState = rememberScrollState()
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            modifier = Modifier.padding(top = 12.dp)
-                                .horizontalScroll(scrollState)
-                        ){
-
-                            CategoryItem(
-                                icon = {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Info,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(25.dp)
-                                    )
-                                },
-                                color = Color(0xFFF7F0F0),
-                                text = "Sage points",
-                                modifier = Modifier
-                            )
-
-                            CategoryItem(
-                                icon = {
-                                    Icon(
-                                        imageVector = Icons.Rounded.MusicNote,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(25.dp)
-                                    )
-                                },
-                                color = Color(0xFFF7F0F0),
-                                text = "Profile Tune",
-                                modifier = Modifier
-                            )
-                        }
-                    }
-                }
-            }
-
-            item {
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(text = "Profile", style = MaterialTheme.typography.titleLarge)
-
-                    RowButton(
-                        leadingIcon = {
-                            Text(
-                                "Activity",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        trailingIcon = {
-                            Icon(imageVector = Icons.Rounded.Schedule, contentDescription = null)
-                        }
-                    ) { }
-
-                    RowButton(
-                        leadingIcon = {
-                            Text(
-                                "Saved",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        trailingIcon = {
-                            Icon(imageVector = Icons.Rounded.Bookmark, contentDescription = null)
-                        }
-                    ) { }
-
-                    RowButton(
-                        leadingIcon = {
-                            Text(
-                                "Favourite",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        trailingIcon = {
-                            Icon(imageVector = Icons.Rounded.Favorite, contentDescription = null)
-                        }
-                    ) { }
-                }
-            }
-
-            item {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 4.dp)
-                    )
-
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        shadowElevation = 3.dp
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
+                        item {
                             Row(
+                                modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+
+                                CircularProfileAvatar(
+                                    size = 100,
+                                ) { }
+
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                                    horizontalAlignment = Alignment.Start,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 12.dp)
+                                        .padding(6.dp)
+                                ) {
+                                    Text(
+                                        text = "Joe Doe",
+                                        style = MaterialTheme.typography.displaySmall
+                                    )
+                                    Text(
+                                        text = "joedoe@dev.to",
+                                        style = MaterialTheme.typography.titleSmall.copy(
+                                            fontWeight = FontWeight.Light
+                                        )
+                                    )
+
+
+                                    val scrollState = rememberScrollState()
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        modifier = Modifier
+                                            .padding(top = 12.dp)
+                                            .horizontalScroll(scrollState)
+                                    ) {
+
+                                        CategoryItem(
+                                            icon = {
+                                                Icon(
+                                                    imageVector = Icons.Rounded.Info,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(25.dp)
+                                                )
+                                            },
+                                            color = Color(0xFFF7F0F0),
+                                            text = "Sage points",
+                                            modifier = Modifier
+                                        )
+
+                                        CategoryItem(
+                                            icon = {
+                                                Icon(
+                                                    imageVector = Icons.Rounded.MusicNote,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(25.dp)
+                                                )
+                                            },
+                                            color = Color(0xFFF7F0F0),
+                                            text = "Profile Tune",
+                                            modifier = Modifier
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(text = "Profile", style = MaterialTheme.typography.titleLarge)
+
+                                RowButton(
+                                    leadingIcon = {
+                                        Text(
+                                            "Activity",
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Schedule,
+                                            contentDescription = null
+                                        )
+                                    }
+                                ) { }
+
+                                RowButton(
+                                    leadingIcon = {
+                                        Text(
+                                            "Saved",
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Bookmark,
+                                            contentDescription = null
+                                        )
+                                    }
+                                ) { }
+
+                                RowButton(
+                                    leadingIcon = {
+                                        Text(
+                                            "Favourite",
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Favorite,
+                                            contentDescription = null
+                                        )
+                                    }
+                                ) { }
+                            }
+                        }
+
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 24.dp, vertical = 4.dp)
+                                )
+
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp),
+                                    shape = RoundedCornerShape(16.dp),
+                                    shadowElevation = 3.dp
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "Become A Sage Master",
+                                                style = MaterialTheme.typography.labelLarge.copy(
+                                                    fontWeight = FontWeight.SemiBold
+                                                )
+                                            )
+
+                                            Icon(
+                                                imageVector = Icons.Rounded.Verified,
+                                                contentDescription = null,
+                                                tint = Color.Blue
+                                            )
+                                        }
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "Sage Master",
+                                                style = MaterialTheme.typography.labelMedium
+                                            )
+
+
+                                            Text(
+                                                text = "$0.30/hr",
+                                                style = MaterialTheme.typography.labelMedium.copy(
+                                                    fontWeight = FontWeight.Light
+                                                )
+                                            )
+
+
+                                        }
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "god Mod",
+                                                style = MaterialTheme.typography.labelMedium
+                                            )
+
+
+                                            Text(
+                                                text = "$30",
+                                                style = MaterialTheme.typography.labelMedium.copy(
+                                                    fontWeight = FontWeight.Light
+                                                )
+                                            )
+
+
+                                        }
+
+                                    }
+                                }
+
+
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 24.dp, vertical = 4.dp)
+                                )
+
+                            }
+                        }
+
+
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
-                                    text = "Become A Sage Master",
-                                    style = MaterialTheme.typography.labelLarge.copy(
-                                        fontWeight = FontWeight.SemiBold
+                                    modifier = Modifier.align(Alignment.Start),
+                                    text = "Preferences",
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+
+                                RowButton(
+                                    leadingIcon = {
+                                        Text(
+                                            "Notification settings",
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Notifications,
+                                            contentDescription = null
+                                        )
+                                    }
+                                ) { }
+
+
+                                TextButton(onClick = {}) {
+                                    Text(
+                                        text = "Delete Account",
+                                        style = MaterialTheme.typography.labelMedium.copy(
+                                            color = Color.Red,
+                                        )
                                     )
-                                )
+                                }
 
-                                Icon(
-                                    imageVector = Icons.Rounded.Verified,
-                                    contentDescription = null,
-                                    tint = Color.Blue
-                                )
-                            }
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Sage Master",
-                                    style = MaterialTheme.typography.labelMedium
-                                )
-
-
-                                Text(
-                                    text = "$0.30/hr",
-                                    style = MaterialTheme.typography.labelMedium.copy(
-                                        fontWeight = FontWeight.Light
+                                TextButton(onClick = {}) {
+                                    Text(
+                                        text = "Terms & Conditions",
+                                        style = MaterialTheme.typography.labelMedium.copy(
+                                            color = Color.Blue
+                                        )
                                     )
-                                )
+                                }
 
-
-                            }
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                                Spacer(Modifier.weight(1f))
                                 Text(
-                                    text = "god Mod",
-                                    style = MaterialTheme.typography.labelMedium
+                                    text = "App ${BuildConfig.VERSION_NAME}",
+                                    style = MaterialTheme.typography.labelSmall
                                 )
-
-
-                                Text(
-                                    text = "$30",
-                                    style = MaterialTheme.typography.labelMedium.copy(
-                                        fontWeight = FontWeight.Light
-                                    )
-                                )
-
+                                Spacer(Modifier.weight(1f))
 
                             }
-
                         }
+
+
                     }
-
-
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 4.dp)
-                    )
-
-                }
-            }
-
-
-            item {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.Start),
-                        text = "Preferences", style = MaterialTheme.typography.titleLarge
-                    )
-
-                    RowButton(
-                        leadingIcon = {
-                            Text(
-                                "Notification settings",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Notifications,
-                                contentDescription = null
-                            )
+                } else {
+                    GetStarted(
+                        onSkip = {
+                            navHostController.popBackStack()
                         }
-                    ) { }
-
-
-                    TextButton(onClick = {}) {
-                        Text(
-                            text = "Delete Account",
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                color = Color.Red,
-                            )
-                        )
-                    }
-
-                    TextButton(onClick = {}) {
-                        Text(
-                            text = "Terms & Conditions",
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                color = Color.Blue
-                            )
-                        )
-                    }
-
-                    Spacer(Modifier.weight(1f))
-                    Text(
-                        text = "App ${BuildConfig.VERSION_NAME}",
-                        style = MaterialTheme.typography.labelSmall
                     )
-                    Spacer(Modifier.weight(1f))
-
                 }
+
             }
-
-
         }
     }
-
 
 }
 

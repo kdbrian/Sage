@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.kdbrian.sage.ui.screens.DocumentDetails
+import com.kdbrian.sage.ui.screens.GetStarted
 import com.kdbrian.sage.ui.screens.HomeScreen
 import com.kdbrian.sage.ui.screens.ProfileScreen
 import com.kdbrian.sage.ui.screens.TopicDetails
@@ -50,6 +51,10 @@ fun MainNav() {
                 documentId = detailsRoute.docId
 
             )
+        }
+
+        composable<GetStartedRoute>{
+            GetStarted()
         }
 
     }
