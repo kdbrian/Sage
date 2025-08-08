@@ -27,33 +27,29 @@ fun RowButton(
     color: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     shape: Shape = RoundedCornerShape(12.dp),
-    leadingIcon: @Composable () -> Unit = {
+    leadingIcon: (@Composable () -> Unit)? = {
         Text(
             text = LoremIpsum(2).values.joinToString(),
             style = MaterialTheme.typography.titleMedium
         )
     },
-    trailingIcon: @Composable () -> Unit = {
-        IconButton(onClick = {}) {
-            Icon(imageVector = Icons.Rounded.KeyboardArrowRight, contentDescription = null)
-        }
-    },
+    trailingIcon: (@Composable () -> Unit)? =null,
 ) {
     Surface(
         modifier = modifier,
         shape = shape,
         color = color,
+        shadowElevation = 3.dp,
         contentColor = contentColor
     ) {
-
         Row(
             modifier = Modifier
-                .padding(horizontal = 6.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            leadingIcon()
-            trailingIcon()
+            leadingIcon?.invoke()
+            trailingIcon?.invoke()
 
         }
 

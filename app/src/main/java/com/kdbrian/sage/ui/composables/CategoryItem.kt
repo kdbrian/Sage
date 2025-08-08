@@ -34,7 +34,7 @@ fun CategoryItem(
             .requiredHeightIn(min = 30.dp, max = 35.dp),
         shape = shape,
         onClick = onClick,
-        shadowElevation = 3.dp
+        shadowElevation = 2.dp
     ) {
         Box(
             modifier = Modifier

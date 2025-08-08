@@ -116,4 +116,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    //extended icons
+    implementation(libs.androidx.material.icons.extended)
+
 }
