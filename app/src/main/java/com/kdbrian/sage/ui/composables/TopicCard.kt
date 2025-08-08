@@ -20,12 +20,17 @@ import com.kdbrian.sage.ui.theme.SageTheme
 @Composable
 fun TopicCard(
     modifier: Modifier = Modifier,
+    color: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surface,
+    contentColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
     text: AnnotatedString = buildAnnotatedString {
         append("Topic")
     }
 ) {
 
     Surface(
+        color = color,
+        contentColor = contentColor,
+        shadowElevation = 2.dp,
         modifier = modifier
             .requiredSize(100.dp),
         shape = RoundedCornerShape(24.dp)
