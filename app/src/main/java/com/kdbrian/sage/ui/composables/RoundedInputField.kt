@@ -26,7 +26,7 @@ fun RoundedInputField(
     modifier: Modifier = Modifier,
     singleLine: Boolean = true,
     fieldState: TextFieldState = rememberTextFieldState(),
-    onValueChange: (String) -> Unit = {},
+    onValueChange: ((String) -> Unit)? = null,
     placeholder: String = "Placeholder",
     leadingIcon: (@Composable () -> Unit)? = null,
     keyBoardActions: KeyboardActions = KeyboardActions.Default,
@@ -51,10 +51,12 @@ fun RoundedInputField(
 
     TextField(
         value = fieldState.text.toString(),
-        onValueChange = onValueChange,
+        onValueChange = {
+            onValueChange?.invoke(it) ?: fieldState.setTextAndPlaceCursorAtEnd(it)
+        },
         modifier = modifier,
         singleLine = singleLine,
-        minLines = if(singleLine) 1 else 3,
+        minLines = if (singleLine) 1 else 3,
         shape = RoundedCornerShape(12.dp),
         placeholder = {
             Text(text = placeholder, style = MaterialTheme.typography.labelMedium)

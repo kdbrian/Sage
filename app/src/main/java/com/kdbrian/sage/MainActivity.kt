@@ -1,5 +1,6 @@
 package com.kdbrian.sage
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,37 +12,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import com.kdbrian.sage.ui.theme.SageTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            enableEdgeToEdge()
+        } else {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+
         setContent {
-            SageTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            App {
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello ${BuildConfig.ENV}!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun App(content: @Composable () -> Unit) {
     SageTheme {
-        Greeting("Android")
+        content()
     }
 }

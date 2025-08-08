@@ -34,10 +34,12 @@ fun RowButton(
         )
     },
     trailingIcon: (@Composable () -> Unit)? =null,
+    onClick: () -> Unit = {}
 ) {
     Surface(
         modifier = modifier,
         shape = shape,
+        onClick = onClick,
         color = color,
         shadowElevation = 3.dp,
         contentColor = contentColor
