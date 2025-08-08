@@ -1,6 +1,8 @@
 package com.kdbrian.sage.ui.composables
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
@@ -27,6 +29,7 @@ import com.kdbrian.sage.ui.theme.SageTheme
 @Composable
 fun CategoryItem(
     modifier: Modifier = Modifier,
+    icon: @Composable (() -> Unit)? = null,
     color: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surface,
     contentColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
     text: String = LoremIpsum(2).values.joinToString(),
@@ -36,7 +39,7 @@ fun CategoryItem(
 
     Surface(
         modifier = modifier
-            .requiredWidthIn(min = 100.dp, max = 120.dp)
+            .requiredWidthIn(min = 100.dp, max = 150.dp)
             .requiredHeightIn(min = 30.dp, max = 35.dp),
         shape = shape,
         color = color,
@@ -44,12 +47,16 @@ fun CategoryItem(
         onClick = onClick,
         shadowElevation = 2.dp
     ) {
-        Box(
+
+        Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 12.dp),
-            contentAlignment = Alignment.Center
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            icon?.invoke()
+
             BasicText(
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontWeight = FontWeight(300),
@@ -57,7 +64,7 @@ fun CategoryItem(
                 ),
                 autoSize = TextAutoSize.StepBased(
                     minFontSize = 14.sp,
-                    maxFontSize = 18.sp,
+                    maxFontSize = 16.sp,
                     stepSize = 1.sp
                 ),
                 text = text,

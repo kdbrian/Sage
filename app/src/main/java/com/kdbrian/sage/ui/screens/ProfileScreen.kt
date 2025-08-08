@@ -1,17 +1,22 @@
 package com.kdbrian.sage.ui.screens
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Verified
@@ -63,12 +68,15 @@ fun ProfileScreen() {
         LazyColumn(
             modifier = Modifier
                 .padding(it)
-                .padding(16.dp),
+                .padding(16.dp)
+            ,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
             item {
                 Row(
+                    modifier = Modifier
+                    ,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
 
@@ -92,11 +100,41 @@ fun ProfileScreen() {
                             )
                         )
 
-                        CategoryItem(
-                            color = Color(0xFFF7F0F0),
-                            text = "Sage points",
+
+                        val scrollState = rememberScrollState()
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
                             modifier = Modifier.padding(top = 12.dp)
-                        )
+                                .horizontalScroll(scrollState)
+                        ){
+
+                            CategoryItem(
+                                icon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Info,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                },
+                                color = Color(0xFFF7F0F0),
+                                text = "Sage points",
+                                modifier = Modifier
+                            )
+
+                            CategoryItem(
+                                icon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.MusicNote,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                },
+                                color = Color(0xFFF7F0F0),
+                                text = "Profile Tune",
+                                modifier = Modifier
+                            )
+                        }
                     }
                 }
             }
@@ -179,7 +217,9 @@ fun ProfileScreen() {
                             ) {
                                 Text(
                                     text = "Become A Sage Master",
-                                    style = MaterialTheme.typography.labelLarge
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    )
                                 )
 
                                 Icon(
