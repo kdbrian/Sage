@@ -1,7 +1,9 @@
 package com.kdbrian.sage
 
 import android.app.Application
-import com.kdbrian.sage.di.templateModules
+import com.kdbrian.sage.di.analyticsModule
+import com.kdbrian.sage.di.coreModules
+import com.kdbrian.sage.di.firebaseModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -20,7 +22,9 @@ class Sage : Application() {
             androidContext(this@Sage)
 
             modules(
-                templateModules,
+                analyticsModule,
+                coreModules,
+                firebaseModules
             )
         }
     }

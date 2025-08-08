@@ -4,7 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +18,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Upload
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -111,134 +115,145 @@ fun CreateScreen() {
             androidx.compose.material3.SnackbarHost(hostState = snackbarHostState)
         },
         modifier = Modifier.fillMaxSize()
-    ) { padding ->
+    ) { pd ->
         val scrollState = rememberScrollState()
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxSize()
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
 
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                    .padding(16.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                Text(text = "Create", style = MaterialTheme.typography.headlineLarge)
-                Text(
-                    text = LoremIpsum(12).values.joinToString(),
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Light,
-                        textAlign = TextAlign.Center
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+
+                    Text(text = "Create", style = MaterialTheme.typography.headlineLarge)
+                    Text(
+                        text = LoremIpsum(12).values.joinToString(),
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Light,
+                            textAlign = TextAlign.Center
+                        )
                     )
+
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                RowButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    leadingIcon = {
+                        Row {
+                            Icon(
+                                imageVector = iconAndText.second,
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text(
+                                text = iconAndText.first ?: "Add Document",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    },
+                    onClick = {
+                        pickDocument.launch(
+                            arrayOf(
+                                "application/pdf",
+                                "application/msword",
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                            )
+                        )
+                    }
                 )
 
-            }
+                RoundedInputField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    placeholder = "rename document"
+                )
 
-            Spacer(Modifier.height(24.dp))
+                RoundedInputField(
+                    singleLine = false,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    placeholder = "Summary"
+                )
 
-            RowButton(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                leadingIcon = {
-                    Row {
-                        Icon(
-                            imageVector = iconAndText.second,
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = iconAndText.first ?: "Add Document",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                },
-                onClick = {
-                    pickDocument.launch(
-                        arrayOf(
-                            "application/pdf",
-                            "application/msword",
-                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        )
-                    )
-                }
-            )
-
-            RoundedInputField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                placeholder = "rename document"
-            )
-
-            RoundedInputField(
-                singleLine = false,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                placeholder = "Summary"
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(top = 12.dp),
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    Text(text = "Topics", style = MaterialTheme.typography.titleLarge)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Topics", style = MaterialTheme.typography.titleLarge)
 
 
-                    CategoryItem(text = "Add", onClick = {
-                        if (docUri == Uri.EMPTY || docUri == null) {
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("Please select a document")
-                            }
-                        } else
-                            isAddingTopic = !isAddingTopic
-                    })
+                        CategoryItem(text = "Add", onClick = {
+                            if (docUri == Uri.EMPTY || docUri == null) {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("Please select a document")
+                                }
+                            } else
+                                isAddingTopic = !isAddingTopic
+                        })
+                    }
+
+
                 }
 
-
-            }
-
-            LazyHorizontalGrid(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
-                    .padding(4.dp),
-                rows = GridCells.Fixed(3),
-            ) {
-                itemsIndexed(topics) { index, topic ->
-                    key(index) {
-                        CategoryItem(
-                            text = topic,
-                            modifier = Modifier.padding(4.dp)
-                        )
+                LazyHorizontalGrid(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .padding(4.dp),
+                    rows = GridCells.Fixed(2),
+                ) {
+                    itemsIndexed(topics) { index, topic ->
+                        key(index) {
+                            CategoryItem(
+                                text = topic,
+                                modifier = Modifier.padding(4.dp)
+                            )
+                        }
                     }
                 }
+
             }
 
-            RowButton(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                leadingIcon = {
-                    Text(
-                        text = "Save",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+            AnimatedVisibility(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
+                visible = docUri != Uri.EMPTY && docUri != null
             ) {
-
+                Button(
+                    onClick = {},
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(8.dp),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Text(text = "Upload")
+                }
             }
-
         }
 
         if (isAddingTopic) {

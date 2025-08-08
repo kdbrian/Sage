@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("plugin.serialization") version "2.2.0"
+    alias(libs.plugins.google.gms.google.services)
 
 }
 
@@ -89,6 +90,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.analytics)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter)
@@ -113,7 +115,6 @@ dependencies {
     //nav
     implementation(libs.androidx.navigation.compose)
 
-
     //coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
@@ -123,4 +124,7 @@ dependencies {
 
     //serialization
     implementation(libs.kotlinx.serialization.json)
+
+    //datastore prefs
+    implementation(libs.androidx.datastore.preferences.core)
 }

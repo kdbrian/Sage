@@ -1,6 +1,14 @@
 package com.kdbrian.sage.nav
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,7 +23,14 @@ import com.kdbrian.sage.ui.screens.TopicDetails
 fun MainNav() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = HomeScreenRoute) {
+
+    NavHost(
+        modifier = Modifier
+            .fillMaxSize()
+        ,
+        navController = navController,
+        startDestination = HomeScreenRoute
+    ) {
 
         composable<HomeScreenRoute> {
             HomeScreen(
@@ -34,7 +49,7 @@ fun MainNav() {
         composable<TopicDetailsRoute> {
             TopicDetails(
                 navController = navController,
-                onClose = {navController.popBackStack()}
+                onClose = { navController.popBackStack() }
             )
         }
 
@@ -53,7 +68,7 @@ fun MainNav() {
             )
         }
 
-        composable<GetStartedRoute>{
+        composable<GetStartedRoute> {
             GetStarted()
         }
 
