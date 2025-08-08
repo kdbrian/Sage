@@ -14,16 +14,23 @@ import com.kdbrian.sage.R
 import com.kdbrian.sage.ui.theme.SageTheme
 
 @Composable
-fun CircularProfileAvatar(modifier: Modifier = Modifier) {
+fun CircularProfileAvatar(
+    modifier: Modifier = Modifier,
+    imageUri: String? = null,
+    onImageClick: () -> Unit = {}
+) {
 
     Surface(
+        onClick = onImageClick,
+        shadowElevation = 3.dp,
         modifier = modifier
             .requiredSize(50.dp),
         shape = CircleShape
     ) {
         AsyncImage(
-            model = null,
+            model = imageUri,
             placeholder = painterResource(R.drawable.current_premium),
+            error = painterResource(R.drawable.current_premium),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
