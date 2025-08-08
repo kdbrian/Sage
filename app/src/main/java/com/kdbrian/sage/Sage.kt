@@ -1,13 +1,13 @@
-package com.kdbrian.templated
+package com.kdbrian.sage
 
 import android.app.Application
-import com.kdbrian.templated.di.templateModules
+import com.kdbrian.sage.di.templateModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
-class TemplatedApp : Application() {
+class Sage : Application() {
     override fun onCreate() {
         super.onCreate()
 
@@ -17,7 +17,7 @@ class TemplatedApp : Application() {
         startKoin {
 
             androidLogger()
-            androidContext(this@TemplatedApp)
+            androidContext(this@Sage)
 
             modules(
                 templateModules,

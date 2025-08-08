@@ -1,4 +1,4 @@
-package com.kdbrian.templated
+package com.kdbrian.sage
 
 import org.junit.Test
 

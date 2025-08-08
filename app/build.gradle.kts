@@ -19,11 +19,11 @@ plugins {
 }
 
 android {
-    namespace = "com.kdbrian.templated"
+    namespace = "com.kdbrian.sage"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.kdbrian.templated"
+        applicationId = "com.kdbrian.sage"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -108,6 +108,12 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
 
+    //nav
+    implementation(libs.androidx.navigation.compose)
 
+
+    //coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
 }
