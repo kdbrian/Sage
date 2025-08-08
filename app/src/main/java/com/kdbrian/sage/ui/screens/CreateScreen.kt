@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateScreen(modifier: Modifier = Modifier) {
+fun CreateScreen() {
 
     val coroutineScope = rememberCoroutineScope()
     var docUri by remember {
@@ -115,7 +115,6 @@ fun CreateScreen(modifier: Modifier = Modifier) {
         val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
-                .padding(padding)
                 .padding(16.dp)
                 .fillMaxSize()
                 .verticalScroll(scrollState),
@@ -228,6 +227,18 @@ fun CreateScreen(modifier: Modifier = Modifier) {
                 }
             }
 
+            RowButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                leadingIcon = {
+                    Text(
+                        text = "Save",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            ) {
+
+            }
+
         }
 
         if (isAddingTopic) {
@@ -266,7 +277,8 @@ fun CreateScreen(modifier: Modifier = Modifier) {
                                     snackbarHostState.showSnackbar("You can only add 8 topics.")
                                 }
                             } else {
-                                topics.add(topicName.text.trim().toString())
+                                if (!topics.contains(topicName.text.trim().toString()))
+                                    topics.add(topicName.text.trim().toString())
                             }
                             isAddingTopic = false
                         }

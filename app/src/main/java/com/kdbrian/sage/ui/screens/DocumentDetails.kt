@@ -37,18 +37,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.kdbrian.sage.App
 import com.kdbrian.sage.R
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DocumentDetails(
-
+    navHostController: NavHostController = rememberNavController(),
+    documentId: String = UUID.randomUUID().toString()
 ) {
 
     var isFavorite by remember {
         mutableStateOf(false)
     }
+
     val favColor by animateColorAsState(
         if (isFavorite)
             Color.Red
@@ -76,7 +81,9 @@ fun DocumentDetails(
                         }
                     },
                     navigationIcon = {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+                            navHostController.popBackStack()
+                        }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                                 contentDescription = null

@@ -23,10 +23,12 @@ fun TopicCard(
     contentColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
     text: AnnotatedString = buildAnnotatedString {
         append("Topic")
-    }
+    },
+    onClick: () -> Unit = {}
 ) {
 
     Surface(
+        onClick = onClick,
         color = color,
         contentColor = contentColor,
         shadowElevation = 2.dp,

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.core.view.WindowCompat
+import com.kdbrian.sage.nav.MainNav
 import com.kdbrian.sage.ui.theme.SageTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             App {
+                MainNav()
             }
         }
     }

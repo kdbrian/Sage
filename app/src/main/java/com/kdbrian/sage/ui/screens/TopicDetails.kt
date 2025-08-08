@@ -31,12 +31,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.kdbrian.sage.App
+import com.kdbrian.sage.nav.DocumentDetailsRoute
 import com.kdbrian.sage.ui.composables.ListItemPreview
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopicDetails() {
+fun TopicDetails(
+    navController: NavHostController,
+    onClose: () -> Unit = {}
+) {
 
 
     var isFavorite by remember {
@@ -65,7 +71,7 @@ fun TopicDetails() {
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = onClose) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                                 contentDescription = null
@@ -101,7 +107,15 @@ fun TopicDetails() {
                 .padding(12.dp)
         ) {
             items(5) {
-                ListItemPreview()
+                ListItemPreview(
+                    onClick = {
+                        navController.navigate(
+                            DocumentDetailsRoute(
+                                UUID.randomUUID().toString().split("-").first()
+                            )
+                        )
+                    }
+                )
             }
 
             item {
@@ -137,6 +151,6 @@ fun TopicDetails() {
 @Composable
 private fun TopicDetailsPrev() {
     App {
-        TopicDetails()
+//        TopicDetails()
     }
 }

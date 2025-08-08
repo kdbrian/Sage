@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.kdbrian.sage.App
 import com.kdbrian.sage.BuildConfig
 import com.kdbrian.sage.ui.composables.CategoryItem
@@ -45,7 +46,9 @@ import com.kdbrian.sage.ui.composables.RowButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navHostController: NavHostController
+) {
     Scaffold(
         topBar = {
             Surface(
@@ -54,7 +57,9 @@ fun ProfileScreen() {
                 TopAppBar(
                     title = { Text(text = "Profile & Settings.") },
                     navigationIcon = {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+                            navHostController.popBackStack()
+                        }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                                 contentDescription = null
@@ -352,6 +357,6 @@ fun ProfileScreen() {
 @Composable
 private fun ProfileScreenPrev() {
     App {
-        ProfileScreen()
+//        ProfileScreen()
     }
 }
