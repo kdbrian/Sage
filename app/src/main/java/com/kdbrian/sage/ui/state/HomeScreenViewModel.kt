@@ -4,6 +4,8 @@ import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kdbrian.sage.domain.repo.TopicRepo
+import com.kdbrian.sage.ui.util.UiTimeOut
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -34,6 +36,7 @@ class HomeScreenViewModel(
 
             allTopics.onSuccess {
                 Timber.d("done ${it.size}")
+                delay(UiTimeOut.timeOut)
                 _mutableState.value = _mutableState.value.copy(
                     topics = it,
                     isLoading = false,
@@ -43,6 +46,7 @@ class HomeScreenViewModel(
 
             allTopics.onFailure {
                 Timber.d("Failed ${it.message}")
+                delay(UiTimeOut.timeOut)
                 _mutableState.value = _mutableState.value.copy(
                     message = it.message ?: "Something went wrong : ${it.message}",
                     isLoading = false

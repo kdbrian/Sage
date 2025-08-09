@@ -22,6 +22,7 @@ import com.kdbrian.sage.ui.screens.HomeScreen
 import com.kdbrian.sage.ui.screens.ProfileScreen
 import com.kdbrian.sage.ui.screens.SearchResults
 import com.kdbrian.sage.ui.screens.TopicDetails
+import com.kdbrian.sage.ui.state.DocumentDetailsScreenViewModel
 import com.kdbrian.sage.ui.state.SearchResultsScreenViewModel
 import com.kdbrian.sage.ui.state.TopicDetailsViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -33,6 +34,7 @@ fun MainNav() {
     val navController = rememberNavController()
     val topicDetailsViewModel = koinViewModel<TopicDetailsViewModel>()
     val searchResultsScreenViewModel = koinViewModel<SearchResultsScreenViewModel>()
+    val documentDetailsScreenViewModel = koinViewModel<DocumentDetailsScreenViewModel>()
 
 
     NavHost(
@@ -80,10 +82,14 @@ fun MainNav() {
 
         composable<DocumentDetailsRoute> {
             val detailsRoute = it.toRoute<DocumentDetailsRoute>()
+
+            LaunchedEffect(Unit) {
+                documentDetailsScreenViewModel.loadDocumentById(detailsRoute.docId)
+            }
+
             DocumentDetails(
                 navHostController = navController,
-                documentId = detailsRoute.docId
-
+                documentDetailsScreenViewModel = documentDetailsScreenViewModel
             )
         }
 
@@ -107,13 +113,6 @@ fun MainNav() {
             )
         }
 
-        composable<DocumentDetailsRoute> {
-            val detailsRoute = it.toRoute<DocumentDetailsRoute>()
-            DocumentDetails(
-                navHostController = navController,
-                documentId = detailsRoute.docId
-            )
-        }
 
     }
 

@@ -3,6 +3,7 @@ package com.kdbrian.sage.ui.state
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kdbrian.sage.domain.repo.DocumentRepo
+import com.kdbrian.sage.ui.util.UiTimeOut
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +22,6 @@ class SearchResultsScreenViewModel(
 
     private val messageChannel = Channel<String>()
     val messages = messageChannel.receiveAsFlow()
-    private val UITimeout = 1200L
-
 
     fun loadSearchResults(query: String) {
         viewModelScope.launch {
@@ -48,7 +47,7 @@ class SearchResultsScreenViewModel(
                             messageChannel.send("${it.size} documents loaded successfully.")
                         }
 
-                        delay(UITimeout)
+                        delay(UiTimeOut.timeOut)
 
 
                         _mutableState.value = _mutableState.value.copy(
@@ -59,7 +58,7 @@ class SearchResultsScreenViewModel(
                     onFailure = {
                         Timber.d("failed: ${it.message}")
                         messageChannel.send(it.message.toString())
-                        delay(UITimeout)
+                        delay(UiTimeOut.timeOut)
                         _mutableState.value = _mutableState.value.copy(
                             isLoading = false,
                         )
@@ -77,7 +76,7 @@ class SearchResultsScreenViewModel(
                         } else {
                             messageChannel.send("${it.size} documents loaded successfully.")
                         }
-                        delay(UITimeout)
+                        delay(UiTimeOut.timeOut)
                         _mutableState.value = _mutableState.value.copy(
                             isLoading = false,
                             documentsFromUploaded = it
@@ -86,7 +85,7 @@ class SearchResultsScreenViewModel(
                     onFailure = {
                         Timber.tag("documentsByQuery").d("failed: ${it.message}")
                         messageChannel.send(it.message.toString())
-                        delay(UITimeout)
+                        delay(UiTimeOut.timeOut)
                         _mutableState.value = _mutableState.value.copy(
                             isLoading = false,
                         )

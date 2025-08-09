@@ -10,7 +10,7 @@ import java.util.UUID
 data class DocumentModel(
     val documentId: String = UUID.randomUUID().toString(),
     val documentName: String = "",
-    val publicationAt: String = "",
+    val publicationAt: String = "${System.currentTimeMillis()}",
     val topics: List<String> = emptyList(),
     val publisher: String = "",//not firebase uid but will be loaded into user account and offloaded
     val summary: String = "",

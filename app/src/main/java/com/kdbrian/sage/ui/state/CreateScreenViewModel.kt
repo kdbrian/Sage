@@ -17,7 +17,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import com.kdbrian.sage.R
+import com.kdbrian.sage.ui.util.UiTimeOut
+import com.kdbrian.sage.util.NotificationData
+import com.kdbrian.sage.util.NotificationUtils.showNotification
 import kotlinx.coroutines.delay
+import java.util.Date
+import kotlin.random.Random
 
 class CreateScreenViewModel(
     private val context: Context,
@@ -30,8 +36,6 @@ class CreateScreenViewModel(
 
     private val messageChannel = Channel<String>()
     val messages = messageChannel.receiveAsFlow()
-
-    private val MessageUpdateTimeout = 3500L
 
 
     fun validate(): Boolean {
@@ -75,6 +79,7 @@ class CreateScreenViewModel(
 
     }
 
+    @androidx.annotation.RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
     fun uploadDocument() {
         viewModelScope.launch {
             _mutableState.value= _mutableState.value.copy(isUploading = true)
@@ -93,16 +98,34 @@ class CreateScreenViewModel(
                     documentModel = documentModel
                 )
 
-                result.onSuccess {
+                result.onSuccess  {
                     messageChannel.send("document uploaded successfully.")
-                    delay(MessageUpdateTimeout)
+                    context.showNotification(
+                        data = NotificationData(
+                            channelId = context.getString(R.string.default_notification_channel),
+                            title = "Upload task",
+                            message = "${documentModel.documentName} uploaded successfully at ${Date(documentModel.publicationAt)}",
+                            smallIcon = R.drawable.baseline_check_24
+                        ),
+                        notificationId = Random.nextInt(1,9)
+                    )
+                    delay(UiTimeOut.timeOut)
                     _mutableState.value = CreateScreenUiState()
                 }
 
                 result.onFailure {
                     messageChannel.send("document uploaded  failed ${it.message}")
-                    delay(MessageUpdateTimeout)
+                    delay(UiTimeOut.timeOut)
                     _mutableState.value = _mutableState.value.copy(isUploading = false)
+                    context.showNotification(
+                        data = NotificationData(
+                            channelId = context.getString(R.string.default_notification_channel),
+                            title = "Upload task",
+                            message = "${documentModel.documentName} upload failed at ${Date(documentModel.publicationAt)}",
+                            smallIcon = R.drawable.outline_brightness_alert_24
+                        ),
+                        notificationId = Random.nextInt(1,9)
+                    )
                 }
 
             }else
