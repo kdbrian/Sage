@@ -12,12 +12,14 @@ fun getSecret(key: String): String? {
 }
 
 plugins {
+
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("plugin.serialization") version "2.2.0"
     alias(libs.plugins.google.gms.google.services)
+    id("com.google.devtools.ksp")
 
 }
 
@@ -132,6 +134,12 @@ dependencies {
 
     //accompanist permissions
     implementation(libs.accompanist.permissions)
+
+    //room
+    val room_version = "2.7.2"
+    implementation("androidx.room:room-runtime:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:${room_version}")
 
 
 }
