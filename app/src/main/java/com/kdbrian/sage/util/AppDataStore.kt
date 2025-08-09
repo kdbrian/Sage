@@ -31,11 +31,18 @@ class AppDataStore(
 
     //fav topics
     private val _favouriteTopics = stringPreferencesKey(Companion.favouriteTopics)
-//    suspend fun updateFavouriteTopics(favouriteTopics: Set<String>) {
-//        context.appDataStore.edit { preferences ->
-//            preferences[_favouriteTopics] = Json.encodeToString(favouriteTopics)
-//        }
-//    }
+    suspend fun updateFavouriteTopics(favouriteTopic: String) {
+        context.appDataStore.edit { preferences ->
+            //decode existing topics
+            val decodeFromString = Json.decodeFromString<Set<String>>(preferences[_favouriteTopics] ?: "[]")
+
+            //add all new
+            val mutableSet = decodeFromString.toMutableSet()
+            mutableSet.add(favouriteTopic)
+
+            preferences[_favouriteTopics] = Json.encodeToString(mutableSet)
+        }
+    }
     val favouriteTopics = context.appDataStore.data.map { preferences ->
         val decodeFromString =
             Json.decodeFromString<Set<String>>(preferences[_favouriteTopics] ?: "[]")

@@ -83,12 +83,21 @@ class TopicDetailsViewModel(
     fun onFavourite() {
         viewModelScope.launch {
             Timber.d("before : ${appDataStore.favouriteTopics.first().size}")
-            _mutableState.value.topicDetails?.topicId?.let {
-                appDataStore.favouriteTopics.first().add(it)
+
+            uiState.value.topicDetails?.topicId?.let {
+                Timber.d("addin ")
+                appDataStore.updateFavouriteTopics(it)
+                _mutableState.value = _mutableState.value.copy(favouriteTopics = appDataStore.favouriteTopics.first())
             }
+
 
             Timber.d("updated : ${appDataStore.favouriteTopics.first().size}")
         }
     }
+
+    fun clear() {
+        _mutableState.value = TopicDetailsUiState()
+    }
+
 
 }

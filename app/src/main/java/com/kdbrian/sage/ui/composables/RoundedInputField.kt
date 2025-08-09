@@ -33,7 +33,7 @@ fun RoundedInputField(
     colors: TextFieldColors = TextFieldDefaults.colors(
         unfocusedContainerColor = Color.LightGray,
         unfocusedPlaceholderColor = Color.White,
-        focusedPlaceholderColor = Color.White,
+        focusedPlaceholderColor = Color.LightGray,
         focusedContainerColor = Color.White,
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,

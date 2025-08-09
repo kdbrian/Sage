@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -25,6 +26,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
@@ -59,6 +62,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -99,6 +103,7 @@ fun LandingPage(
         isExpanded = appDataStore.firstTime.first()
     }
 
+    val focusManager = LocalFocusManager.current
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -206,64 +211,6 @@ fun LandingPage(
             Column {
 
                 Text(
-                    text = "Explore",
-                    modifier = Modifier.padding(top = 12.dp, start = 12.dp),
-                    style = MaterialTheme.typography.titleLarge
-                        .copy(fontWeight = FontWeight.Bold)
-                )
-
-                LazyHorizontalStaggeredGrid(
-                    rows = StaggeredGridCells.Fixed(3),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp)
-                        .padding(horizontal = 12.dp)
-                        .requiredHeightIn(max = 180.dp),
-                ) {
-                    if (uiState.isLoading) {
-                        items(12) {
-                            TopicCard(
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .clip(RoundedCornerShape(24.dp))
-                                    .background(Color.LightGray),
-                                text = buildAnnotatedString { append(" ") },
-                            )
-                        }
-                    } else {
-                        itemsIndexed(uiState.topics) { index, topic ->
-                            key(index) {
-                                TopicCard(
-                                    modifier = Modifier
-                                        .padding(4.dp),
-                                    text = buildAnnotatedString {
-                                        append(topic?.topicName ?: "")
-                                    },
-                                    onClick = {
-                                        onOpenTopic(topic?.topicId ?: "Invalid")
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-//            Spacer(Modifier.weight(1f))
-
-            RoundedInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                fieldState = uiState.searchQuery,
-                placeholder = "Search",
-            )
-
-//            Spacer(Modifier.weight(1f))
-
-            Column {
-
-                Text(
                     text = "Documents For You",
                     modifier = Modifier.padding(top = 12.dp, start = 12.dp),
                     style = MaterialTheme.typography.titleLarge
@@ -276,8 +223,8 @@ fun LandingPage(
                         .padding(top = 12.dp)
                         .padding(horizontal = 12.dp)
                         .requiredHeightIn(
-                            max = 200.dp,
-                            min = 180.dp
+                            max = 170.dp,
+                            min = 150.dp
                         ),
                     contentColor = Color.White,
                     shape = RoundedCornerShape(24.dp),
@@ -358,6 +305,77 @@ fun LandingPage(
 
                 }
             }
+
+
+            RoundedInputField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 32.dp),
+                fieldState = uiState.searchQuery,
+                placeholder = "Search",
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Search,
+                        contentDescription = null
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = androidx.compose.ui.text.input.ImeAction.Search,
+                    capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
+                ),
+                keyBoardActions = KeyboardActions(
+                    onSearch = {
+                        focusManager.clearFocus()
+                    }
+                )
+            )
+
+
+            Column {
+
+                Text(
+                    text = "Explore",
+                    modifier = Modifier.padding(top = 12.dp, start = 12.dp),
+                    style = MaterialTheme.typography.titleLarge
+                        .copy(fontWeight = FontWeight.Bold)
+                )
+
+                LazyHorizontalStaggeredGrid(
+                    rows = StaggeredGridCells.Fixed(4),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp)
+                        .padding(horizontal = 12.dp)
+                        .requiredHeightIn(max = 250.dp),
+                ) {
+                    if (uiState.isLoading) {
+                        items(20) {
+                            TopicCard(
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .padding(4.dp),
+                                text = buildAnnotatedString { append(" ") },
+                            )
+                        }
+                    } else {
+                        itemsIndexed(uiState.topics) { index, topic ->
+                            key(index) {
+                                TopicCard(
+                                    modifier = Modifier
+                                        .padding(4.dp),
+                                    text = buildAnnotatedString {
+                                        append(topic?.topicName ?: "")
+                                    },
+                                    onClick = {
+                                        onOpenTopic(topic?.topicId ?: "Invalid")
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
 
 
         }
