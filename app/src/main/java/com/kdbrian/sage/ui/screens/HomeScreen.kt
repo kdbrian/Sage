@@ -7,6 +7,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -16,18 +18,22 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kdbrian.sage.nav.CreateScreenRoute
 import com.kdbrian.sage.nav.HomeScreenRoute
+import com.kdbrian.sage.ui.state.HomeScreenViewModel
 import com.kdbrian.sage.ui.theme.SageTheme
 import com.kdbrian.sage.ui.util.BottomBarItem
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
 fun HomeScreen(
     navHostController: NavHostController = rememberNavController(),
     onOpenProfile : ()-> Unit,
-    onTopicExpand : ()-> Unit,
+    onTopicExpand : (String)-> Unit,
     onOpenFYP: () -> Unit = {}
 ) {
 
+    val homeScreenViewModel = koinViewModel<HomeScreenViewModel>()
+    val uiState by homeScreenViewModel.uiState.collectAsState()
     val backStackEntryAsState = navHostController.currentBackStackEntryAsState()
 
     Scaffold(
@@ -37,7 +43,13 @@ fun HomeScreen(
                     NavigationBarItem(
                         selected = backStackEntryAsState.value?.destination?.route == item.route.toString(),
                         onClick = {
-                            navHostController.navigate(item.route)
+                            navHostController.navigate(item.route){
+                                popUpTo(HomeScreenRoute){
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         },
                         icon = {
                             Icon(imageVector = item.icon, contentDescription = null)
@@ -57,6 +69,7 @@ fun HomeScreen(
         ) {
             composable<HomeScreenRoute> {
                 LandingPage(
+                    uiState = uiState,
                     onOpenProfile = onOpenProfile,
                     onOpenTopic = onTopicExpand,
                     openFYP = onOpenFYP

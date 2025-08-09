@@ -1,0 +1,128 @@
+package com.kdbrian.sage.data.remote.impl
+
+import com.google.firebase.firestore.FirebaseFirestore
+import com.kdbrian.sage.domain.model.DocumentModel
+import com.kdbrian.sage.domain.repo.DocumentRepo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+
+class DocumentRepoImpl(
+    private val firebaseFirestore: FirebaseFirestore
+) : DocumentRepo {
+    override suspend fun loadDefaultDocumentsAll(): Result<List<DocumentModel?>> = withContext(
+        Dispatchers.Default
+    ) {
+        try {
+            val documentSnapshots =
+                firebaseFirestore.collection(DocumentModel.defaultCollectionName)
+                    .get()
+                    .await()
+
+            val documentModels = documentSnapshots.documents
+                .map { it.toObject(DocumentModel::class.java) }
+                .toList()
+            Result.success(documentModels)
+        } catch (e: Exception) {
+            Result.failure(e)
+
+        }
+
+    }
+
+    override suspend fun loadUploadedDocumentsAll(): Result<List<DocumentModel?>> = withContext(
+        Dispatchers.Default
+    ) {
+        try {
+            val documentSnapshots =
+                firebaseFirestore.collection(DocumentModel.generatedCollectionName)
+                    .get()
+                    .await()
+
+            val documentModels = documentSnapshots.documents
+                .map { it.toObject(DocumentModel::class.java) }
+                .toList()
+
+            Result.success(documentModels)
+        } catch (e: Exception) {
+            Result.failure(e)
+
+        }
+
+    }
+
+    override suspend fun loadDefaultDocumentsByTopic(topicId: String): Result<List<DocumentModel?>> =
+        withContext(Dispatchers.Default) {
+            try {
+                val documentSnapshots =
+                    firebaseFirestore.collection(DocumentModel.defaultCollectionName)
+                        .whereArrayContains("topics", topicId)
+                        .get()
+                        .await()
+                val documentModels = documentSnapshots.documents
+                    .map { it.toObject(DocumentModel::class.java) }
+                    .toList()
+
+                Result.success(documentModels)
+            } catch (e: Exception) {
+                Result.failure(e)
+
+            }
+        }
+
+    override suspend fun loadUploadedDocumentsByTopic(topicId: String): Result<List<DocumentModel?>> =
+        withContext(Dispatchers.Default) {
+
+            try {
+                val documentSnapshots =
+                    firebaseFirestore.collection(DocumentModel.generatedCollectionName)
+                        .whereArrayContains("topics", topicId)
+                        .get()
+                        .await()
+                val documentModels = documentSnapshots.documents
+                    .map { it.toObject(DocumentModel::class.java) }
+                    .toList()
+
+                Result.success(documentModels)
+            } catch (e: Exception) {
+                Result.failure(e)
+
+            }
+        }
+
+    override suspend fun loadDefaultDocumentsByQuery(query: String): Result<List<DocumentModel?>> =
+        withContext(Dispatchers.Default) {
+            loadDefaultDocumentsAll()
+                .fold(
+                    onSuccess = { documents ->
+                        val documentModels = documents.filter {
+                            (it?.documentName?.contains(query, ignoreCase = true) == true) ||
+                                    (it?.summary?.contains(query, ignoreCase = true) == true)
+                        }
+
+                        Result.success(documentModels)
+                    },
+                    onFailure = {
+                        Result.failure(it)
+                    }
+
+                )
+        }
+
+    override suspend fun loadUploadedDocumentsByQuery(query: String): Result<List<DocumentModel?>> =
+        withContext(Dispatchers.Default) {
+            loadUploadedDocumentsAll()
+                .fold(
+                    onSuccess = { documents ->
+                        val documentModels = documents.filter {
+                            (it?.documentName?.contains(query, ignoreCase = true) == true) ||
+                                    (it?.summary?.contains(query, ignoreCase = true) == true)
+                        }
+                        Result.success(documentModels)
+                    },
+                    onFailure = {
+                        Result.failure(it)
+                    }
+                )
+        }
+}

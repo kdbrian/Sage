@@ -44,7 +44,7 @@ fun RoundedInputField(
         unfocusedTextColor = Color.Black,
         cursorColor = Color.Black,
         unfocusedLeadingIconColor = Color.White,
-        focusedLeadingIconColor = Color.White,
+        focusedLeadingIconColor = Color.Black,
     )
 ) {
 

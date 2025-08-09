@@ -19,7 +19,7 @@ data object CreateScreenRoute : Route()
 
 
 @Serializable
-data object TopicDetailsRoute : Route()
+data class TopicDetailsRoute(val topicId : String) : Route()
 
 
 @Serializable

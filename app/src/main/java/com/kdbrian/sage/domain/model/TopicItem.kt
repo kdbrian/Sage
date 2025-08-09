@@ -10,6 +10,7 @@ data class TopicItem(
     val dateAdded: Long = System.currentTimeMillis(),
 ){
     companion object{
-        const val collectionName = "${BuildConfig.APPLICATION_ID}/topics/default"
+        const val defaultCollectionName = "${BuildConfig.APPLICATION_ID}/topics/default"
+        const val generatedCollectionName = "${BuildConfig.APPLICATION_ID}/topics/gen_ai"
     }
 }
