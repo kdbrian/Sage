@@ -8,7 +8,8 @@ val documentModules = module {
 
     single<DocumentRepo> {
         DocumentRepoImpl(
-            firebaseFirestore = get()
+            firebaseFirestore = get(),
+            firebaseStorage = get()
         )
     }
 

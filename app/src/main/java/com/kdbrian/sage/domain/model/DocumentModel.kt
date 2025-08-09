@@ -15,7 +15,7 @@ data class DocumentModel(
     val publisher: String = "",//not firebase uid but will be loaded into user account and offloaded
     val summary: String = "",
     val isAiSummarizable: String = "",
-    val fileInfo: String = "",
+    var fileInfo: String = "",
     val aiSummary: String = "",
     val uri: String = "",
 ) {

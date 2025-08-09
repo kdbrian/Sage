@@ -23,6 +23,7 @@ import com.kdbrian.sage.ui.theme.SageTheme
 fun RoundedInputField(
     modifier: Modifier = Modifier,
     singleLine: Boolean = true,
+    enabled: Boolean = true,
     fieldState: TextFieldState = rememberTextFieldState(),
     onValueChange: ((String) -> Unit)? = null,
     placeholder: String = "Placeholder",
@@ -45,10 +46,13 @@ fun RoundedInputField(
         cursorColor = Color.Black,
         unfocusedLeadingIconColor = Color.White,
         focusedLeadingIconColor = Color.Black,
-    )
+    ),
+    supportText : @Composable (() -> Unit)? = null
 ) {
 
     TextField(
+        supportingText = supportText,
+        enabled = enabled,
         value = fieldState.text.toString(),
         onValueChange = {
             onValueChange?.invoke(it) ?: fieldState.setTextAndPlaceCursorAtEnd(it)

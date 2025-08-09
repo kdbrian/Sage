@@ -21,6 +21,7 @@ timber = "5.0.1"
 googleGmsGoogleServices = "4.4.3"
 firebaseAnalytics = "23.0.0"
 firebaseFirestore = "26.0.0"
+firebaseStorage = "22.0.0"
 
 
 [libraries]
@@ -56,6 +57,7 @@ koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

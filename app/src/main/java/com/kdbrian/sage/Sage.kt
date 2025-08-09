@@ -3,6 +3,7 @@ package com.kdbrian.sage
 import android.app.Application
 import com.kdbrian.sage.di.analyticsModule
 import com.kdbrian.sage.di.coreModules
+import com.kdbrian.sage.di.createDocumentModules
 import com.kdbrian.sage.di.documentModules
 import com.kdbrian.sage.di.firebaseModules
 import com.kdbrian.sage.di.homeModules
@@ -27,6 +28,7 @@ class Sage : Application() {
             modules(
                 analyticsModule,
                 coreModules,
+                createDocumentModules,
                 documentModules,
                 firebaseModules,
                 homeModules,

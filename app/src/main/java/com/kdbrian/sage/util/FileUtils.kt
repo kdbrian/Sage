@@ -24,4 +24,24 @@ object FileUtils {
         return result
     }
 
+
+    fun Context.getDocumentMetadataMap(uri: Uri): Map<String, String> {
+        val metadata = mutableMapOf<String, String>()
+
+        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val columnNames = cursor.columnNames
+            if (cursor.moveToFirst()) {
+                columnNames.forEach { columnName ->
+                    val value = cursor.getString(cursor.getColumnIndexOrThrow(columnName)) ?: "null"
+                    metadata[columnName] = value
+                }
+            }
+        }
+
+        return metadata
+    }
+
+
+
+
 }
