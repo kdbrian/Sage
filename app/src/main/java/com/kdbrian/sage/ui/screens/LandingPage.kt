@@ -1,5 +1,6 @@
 package com.kdbrian.sage.ui.screens
 
+import android.graphics.fonts.FontStyle
 import android.icu.text.StringSearch
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
@@ -89,6 +90,7 @@ import org.koin.compose.koinInject
 @Composable
 fun LandingPage(
     uiState: HomeScreenUiState,
+    onSearch: (String) -> Unit = {},
     onOpenProfile: () -> Unit = {},
     onOpenTopic: (String) -> Unit = {},
     openFYP: () -> Unit = {}
@@ -312,7 +314,19 @@ fun LandingPage(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 32.dp),
                 fieldState = uiState.searchQuery,
-                placeholder = "Search",
+                placeholder = buildAnnotatedString {
+                    append("topic:")
+
+                    withStyle(
+                        SpanStyle(
+                            fontWeight = FontWeight.SemiBold,
+                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                        )
+                    ) {
+                        append("\"finance\"")
+                    }
+                    append(" or just \"finance\"")
+                }.toString(),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Rounded.Search,
@@ -326,6 +340,7 @@ fun LandingPage(
                 keyBoardActions = KeyboardActions(
                     onSearch = {
                         focusManager.clearFocus()
+                        onSearch(uiState.searchQuery.text.toString())
                     }
                 )
             )
@@ -375,7 +390,6 @@ fun LandingPage(
                     }
                 }
             }
-
 
 
         }

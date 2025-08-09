@@ -5,6 +5,7 @@ import com.kdbrian.sage.domain.model.DocumentModel
 
 interface DocumentRepo {
 
+    suspend fun simplerSearch(collectionName : String = DocumentModel.generatedCollectionName, row : String, rowValue : String, filter: String): Result<List<DocumentModel?>>
 
     suspend fun saveDocumentMetaData(uri: Uri, documentModel: DocumentModel): Result<Boolean>
 

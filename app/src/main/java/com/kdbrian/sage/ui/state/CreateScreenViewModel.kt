@@ -146,6 +146,7 @@ class CreateScreenViewModel(
 
     fun clear() {
         _mutableState.value = CreateScreenUiState()
+        messageChannel.close()
     }
 
 

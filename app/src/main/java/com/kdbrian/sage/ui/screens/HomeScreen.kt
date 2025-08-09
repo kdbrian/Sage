@@ -27,8 +27,9 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeScreen(
     navHostController: NavHostController = rememberNavController(),
-    onOpenProfile : ()-> Unit,
-    onTopicExpand : (String)-> Unit,
+    onSearch: (String) -> Unit = {},
+    onOpenProfile: () -> Unit,
+    onTopicExpand: (String) -> Unit,
     onOpenFYP: () -> Unit = {}
 ) {
 
@@ -43,8 +44,8 @@ fun HomeScreen(
                     NavigationBarItem(
                         selected = backStackEntryAsState.value?.destination?.route == item.route.toString(),
                         onClick = {
-                            navHostController.navigate(item.route){
-                                popUpTo(HomeScreenRoute){
+                            navHostController.navigate(item.route) {
+                                popUpTo(HomeScreenRoute) {
                                     saveState = true
                                 }
                                 launchSingleTop = true
@@ -69,6 +70,7 @@ fun HomeScreen(
         ) {
             composable<HomeScreenRoute> {
                 LandingPage(
+                    onSearch = onSearch,
                     uiState = uiState,
                     onOpenProfile = onOpenProfile,
                     onOpenTopic = onTopicExpand,

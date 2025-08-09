@@ -29,3 +29,7 @@ data object ProfileRoute : Route()
 @Serializable
 data class DocumentDetailsRoute(val docId : String): Route()
 
+
+@Serializable
+data class SearchResultsRoute(val query : String): Route()
+

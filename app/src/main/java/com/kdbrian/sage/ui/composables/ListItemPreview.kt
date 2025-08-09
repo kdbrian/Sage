@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
@@ -30,6 +34,19 @@ import com.kdbrian.sage.App
 @Composable
 fun ListItemPreview(
     modifier: Modifier = Modifier,
+    title: String = LoremIpsum(13).values.joinToString(),
+    subtitle: AnnotatedString = buildAnnotatedString {
+        append("Upto ")
+        withStyle(
+            SpanStyle(
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.SemiBold
+            )
+        ) {
+            append("300 ")
+        }
+        append("documents.")
+    },
     onClick: () -> Unit = {}
 ) {
 
@@ -41,7 +58,7 @@ fun ListItemPreview(
         shape = RoundedCornerShape(16.dp),
     ) {
         Row(
-            modifier = Modifier.padding(4.dp),
+            modifier = Modifier.padding(6.dp),
             verticalAlignment = Alignment.Top
         ) {
 
@@ -58,25 +75,21 @@ fun ListItemPreview(
 
                 ) {
 
-                Text(
-                    text = LoremIpsum(3).values.joinToString(),
+                BasicText(
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
+                    modifier = Modifier.widthIn(max = 220.dp),
+                    text = title,
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                Text(
-                    text = buildAnnotatedString {
-                        append("Upto ")
-                        withStyle(
-                            SpanStyle(
-                                fontStyle = FontStyle.Italic,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        ) {
-                            append("300 ")
-                        }
-                        append("documents.")
-                    },
-                    style = MaterialTheme.typography.labelMedium
+                BasicText(
+                    modifier = Modifier.widthIn(max = 180.dp).padding(4.dp),
+                    text = subtitle,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Light
+                    )
                 )
             }
 

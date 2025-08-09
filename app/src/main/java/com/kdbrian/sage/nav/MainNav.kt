@@ -20,15 +20,19 @@ import com.kdbrian.sage.ui.screens.DocumentDetails
 import com.kdbrian.sage.ui.screens.GetStarted
 import com.kdbrian.sage.ui.screens.HomeScreen
 import com.kdbrian.sage.ui.screens.ProfileScreen
+import com.kdbrian.sage.ui.screens.SearchResults
 import com.kdbrian.sage.ui.screens.TopicDetails
+import com.kdbrian.sage.ui.state.SearchResultsScreenViewModel
 import com.kdbrian.sage.ui.state.TopicDetailsViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import timber.log.Timber
 
 @Composable
 fun MainNav() {
 
     val navController = rememberNavController()
     val topicDetailsViewModel = koinViewModel<TopicDetailsViewModel>()
+    val searchResultsScreenViewModel = koinViewModel<SearchResultsScreenViewModel>()
 
 
     NavHost(
@@ -40,6 +44,9 @@ fun MainNav() {
 
         composable<HomeScreenRoute> {
             HomeScreen(
+                onSearch = {
+                    navController.navigate(SearchResultsRoute(it))
+                },
                 onOpenProfile = {
                     navController.navigate(ProfileRoute)
                 },
@@ -50,7 +57,6 @@ fun MainNav() {
                 }
             )
         }
-
 
         composable<TopicDetailsRoute> {
             val detailsRoute = it.toRoute<TopicDetailsRoute>()
@@ -83,6 +89,30 @@ fun MainNav() {
 
         composable<GetStartedRoute> {
             GetStarted()
+        }
+
+        composable<SearchResultsRoute> {
+            val searchResultsRoute = it.toRoute<SearchResultsRoute>()
+            Timber.d("query: ${searchResultsRoute.query}")
+
+            LaunchedEffect(searchResultsRoute) {
+                searchResultsScreenViewModel.loadSearchResults(searchResultsRoute.query)
+            }
+
+
+            SearchResults(
+                searchResultsScreenViewModel = searchResultsScreenViewModel,
+                query = searchResultsRoute.query,
+                navController = navController
+            )
+        }
+
+        composable<DocumentDetailsRoute> {
+            val detailsRoute = it.toRoute<DocumentDetailsRoute>()
+            DocumentDetails(
+                navHostController = navController,
+                documentId = detailsRoute.docId
+            )
         }
 
     }

@@ -1,6 +1,7 @@
 package com.kdbrian.sage.data.remote.impl
 
 import android.net.Uri
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kdbrian.sage.domain.model.DocumentModel
@@ -15,6 +16,41 @@ class DocumentRepoImpl(
     private val firebaseFirestore: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
 ) : DocumentRepo {
+
+    override suspend fun simplerSearch(
+        collectionName: String,
+        row: String,
+        rowValue: String,
+        filter: String
+    ): Result<List<DocumentModel?>> =
+        withContext(Dispatchers.Default) {
+            try {
+
+                val collectionReference = firebaseFirestore.collection(collectionName)
+
+                val documentSnapshots = collectionReference
+                    .where(
+                        when (filter) {
+                            "contains" -> Filter.or(
+                                Filter.equalTo(row, rowValue),
+                                Filter.arrayContains(row, rowValue)
+                            )
+
+                            "equals" -> Filter.equalTo(row, rowValue)
+                            else -> Filter.equalTo(row, rowValue)
+                        }
+                    ).get()
+                    .await()
+
+                val documentModels = documentSnapshots.documents.map {
+                    it.toObject(DocumentModel::class.java)
+                }.toList()
+
+                Result.success(documentModels)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
 
 
     override suspend fun saveDocumentMetaData(
