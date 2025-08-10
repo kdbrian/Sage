@@ -1,8 +1,6 @@
 package com.kdbrian.sage.domain.model
 
-import com.google.firebase.events.Publisher
 import com.kdbrian.sage.BuildConfig
-import kotlinx.serialization.MetaSerializable
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -20,10 +18,8 @@ data class DocumentModel(
     val uri: String = "",
 ) {
     companion object {
-        const val defaultCollectionName =
-            "${BuildConfig.APPLICATION_ID}/documents_meta/default" //our inventory
-        const val generatedCollectionName =
-            "${BuildConfig.APPLICATION_ID}/documents_meta/uploaded"//uploaded by user
+        val defaultCollectionName = "${BuildConfig.APPLICATION_ID}/documents_meta/default" //our inventory
+        val generatedCollectionName = "${BuildConfig.APPLICATION_ID}/documents_meta/uploaded"//uploaded by user
     }
 
 }

@@ -5,11 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface InAppActivityDao {
 
-    fun logActivity(inAppActivity: InAppActivity)
+    suspend fun logActivity(inAppActivity: InAppActivity)
 
-    fun logs(): Flow<List<InAppActivity>>
+    suspend fun logs(): Flow<InAppActivity>
 
-    fun loadLogById(id: String): InAppActivity?
+    suspend fun loadLogById(id: String): InAppActivity?
 
-    fun clearLogs()
+    suspend fun clearLogs()
 }

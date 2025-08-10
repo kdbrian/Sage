@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Favorite
@@ -25,6 +26,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -146,16 +148,27 @@ fun TopicDetails(
                 .padding(it)
                 .padding(12.dp)
         ) {
-            items(5) {
-                ListItemPreview(
-                    onClick = {
-                        navController.navigate(
-                            DocumentDetailsRoute(
-                                UUID.randomUUID().toString().split("-").first()
+            if (uiState.isLoading) {
+                items(3) {
+                    ListItemPreview()
+                }
+            } else {
+//                uiState.topicDocuments?.let { documentModels ->
+                itemsIndexed(uiState.topicDocuments) { index, model ->
+                    key(index) {
+                        model?.let { m ->
+                            ListItemPreview(
+                                title = m.documentName,
+                                onClick = {
+                                    navController.navigate(
+                                        DocumentDetailsRoute(m.documentId)
+                                    )
+                                }
                             )
-                        )
+                        }
                     }
-                )
+                }
+//                }
             }
 
             item {
@@ -181,6 +194,7 @@ fun TopicDetails(
                     }
                 }
             }
+
         }
     }
 

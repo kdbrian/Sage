@@ -20,7 +20,7 @@ plugins {
     kotlin("plugin.serialization") version "2.2.0"
     alias(libs.plugins.google.gms.google.services)
     id("com.google.devtools.ksp")
-
+    id ("io.realm.kotlin")
 }
 
 android {
@@ -136,10 +136,12 @@ dependencies {
     implementation(libs.accompanist.permissions)
 
     //room
-    val room_version = "2.7.2"
-    implementation("androidx.room:room-runtime:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:${room_version}")
+//    val room_version = "2.7.2"
+//    implementation("androidx.room:room-runtime:$room_version")
+//    ksp("androidx.room:room-compiler:$room_version")
+//    implementation("androidx.room:room-ktx:${room_version}")
 
+    //realm
+    implementation(libs.library.base)
 
 }

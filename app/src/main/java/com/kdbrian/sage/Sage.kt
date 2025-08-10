@@ -7,6 +7,7 @@ import com.kdbrian.sage.di.createDocumentModules
 import com.kdbrian.sage.di.documentModules
 import com.kdbrian.sage.di.firebaseModules
 import com.kdbrian.sage.di.homeModules
+import com.kdbrian.sage.di.realmModules
 import com.kdbrian.sage.di.searchModules
 import com.kdbrian.sage.di.topicModules
 import org.koin.android.ext.koin.androidContext
@@ -34,6 +35,7 @@ class Sage : Application() {
                 firebaseModules,
                 homeModules,
                 searchModules,
+                realmModules,
                 topicModules,
             )
         }

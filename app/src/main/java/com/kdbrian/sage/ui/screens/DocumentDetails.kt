@@ -86,15 +86,12 @@ fun DocumentDetails(
             18.dp
     )
 
-//    val swapDelay = 900L
     var index by remember {
         mutableIntStateOf(0)
     }
 
     LaunchedEffect(Unit) {
         while (true) {
-            Timber.d("swapped index: $index")
-
             delay(UiTimeOut.timeOut)
             if (index == (uiState.documentModel?.topics?.size ?: 0) - 1) {
                 index--
@@ -115,11 +112,13 @@ fun DocumentDetails(
                         Column {
                             Text(
                                 text = uiState.documentModel?.topics[index] ?: "",
-                                modifier = Modifier.padding(6.dp).clickable {
-                                    navHostController.navigate(
-                                        SearchResultsRoute(query = "topic:${uiState.documentModel?.topics[index]}")
-                                    )
-                                }
+                                modifier = Modifier
+                                    .padding(6.dp)
+                                    .clickable {
+                                        navHostController.navigate(
+                                            SearchResultsRoute(query = "topic:${uiState.documentModel?.topics[index]}")
+                                        )
+                                    }
                             )
                         }
                     },
@@ -212,7 +211,8 @@ fun DocumentDetails(
 
 
                     Text(
-                        text = uiState.documentModel?.publicationAt?.toLong()?.formatAsDate() ?: "",
+                        text = (uiState.documentModel?.publicationAt?.toLong()
+                            ?: System.currentTimeMillis()).formatAsDate(),
                         style = MaterialTheme.typography.bodyMedium
                     )
 
