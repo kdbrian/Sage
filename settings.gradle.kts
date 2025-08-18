@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Templated"
+rootProject.name = "Sage"
 include(":app")

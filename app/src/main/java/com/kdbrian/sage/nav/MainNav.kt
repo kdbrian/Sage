@@ -1,0 +1,120 @@
+package com.kdbrian.sage.nav
+
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.kdbrian.sage.ui.screens.DocumentDetails
+import com.kdbrian.sage.ui.screens.GetStarted
+import com.kdbrian.sage.ui.screens.HomeScreen
+import com.kdbrian.sage.ui.screens.ProfileScreen
+import com.kdbrian.sage.ui.screens.SearchResults
+import com.kdbrian.sage.ui.screens.TopicDetails
+import com.kdbrian.sage.ui.state.DocumentDetailsScreenViewModel
+import com.kdbrian.sage.ui.state.SearchResultsScreenViewModel
+import com.kdbrian.sage.ui.state.TopicDetailsViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import timber.log.Timber
+
+@Composable
+fun MainNav() {
+
+    val navController = rememberNavController()
+    val topicDetailsViewModel = koinViewModel<TopicDetailsViewModel>()
+    val searchResultsScreenViewModel = koinViewModel<SearchResultsScreenViewModel>()
+    val documentDetailsScreenViewModel = koinViewModel<DocumentDetailsScreenViewModel>()
+
+
+    NavHost(
+        modifier = Modifier
+            .fillMaxSize(),
+        navController = navController,
+        startDestination = HomeScreenRoute
+    ) {
+
+        composable<HomeScreenRoute> {
+            HomeScreen(
+                onSearch = {
+                    navController.navigate(SearchResultsRoute(it))
+                },
+                onOpenProfile = {
+                    navController.navigate(ProfileRoute)
+                },
+                onTopicExpand = {
+                    navController.navigate(TopicDetailsRoute(it))
+                },
+                onOpenFYP = {
+                }
+            )
+        }
+
+        composable<TopicDetailsRoute> {
+            val detailsRoute = it.toRoute<TopicDetailsRoute>()
+
+            LaunchedEffect(Unit) {
+                topicDetailsViewModel.loadTopicDetails(detailsRoute.topicId)
+            }
+
+            TopicDetails(
+                topicDetailsViewModel = topicDetailsViewModel,
+                navController = navController,
+                onClose = { navController.popBackStack() }
+            )
+        }
+
+        composable<ProfileRoute> {
+            ProfileScreen(
+                navHostController = navController
+            )
+        }
+
+        composable<DocumentDetailsRoute> {
+            val detailsRoute = it.toRoute<DocumentDetailsRoute>()
+
+            LaunchedEffect(Unit) {
+                documentDetailsScreenViewModel.loadDocumentById(detailsRoute.docId)
+            }
+
+            DocumentDetails(
+                navHostController = navController,
+                documentDetailsScreenViewModel = documentDetailsScreenViewModel
+            )
+        }
+
+        composable<GetStartedRoute> {
+            GetStarted()
+        }
+
+        composable<SearchResultsRoute> {
+            val searchResultsRoute = it.toRoute<SearchResultsRoute>()
+            Timber.d("query: ${searchResultsRoute.query}")
+
+            LaunchedEffect(searchResultsRoute) {
+                searchResultsScreenViewModel.loadSearchResults(searchResultsRoute.query)
+            }
+
+
+            SearchResults(
+                searchResultsScreenViewModel = searchResultsScreenViewModel,
+                query = searchResultsRoute.query,
+                navController = navController
+            )
+        }
+
+
+    }
+
+
+}
