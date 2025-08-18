@@ -65,11 +65,11 @@ An Android application built with **Kotlin** and **Jetpack Compose**, enabling u
 |-------------|-----------------|--------------|
 | ![Home](https://github.com/user-attachments/assets/3adbd85b-d617-4e82-ac2e-c596de88f104) | ![Upload]([screenshots/upload.png](https://github.com/user-attachments/assets/83d5a75f-c80a-4e47-a90f-9842443809c1)) | ![Share]([screenshots/share.png](https://github.com/user-attachments/assets/050bde91-934c-4979-a9fe-34a58a982d10)) |
 
-
+<!--
 | Login | Profile | Settings | AI Features |
 |-------|---------|----------|--------------|
 | ![Login](screenshots/login.png) | ![Profile](screenshots/profile.png) | ![Settings](screenshots/settings.png) | ![AI](screenshots/ai.png) |
-
+-->
 ---
 
 ## 📂 Project Structure  
