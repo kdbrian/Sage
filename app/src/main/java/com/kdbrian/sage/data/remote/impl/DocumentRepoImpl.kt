@@ -1,7 +1,6 @@
 package com.kdbrian.sage.data.remote.impl
 
 import android.net.Uri
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kdbrian.sage.domain.model.DocumentModel
@@ -18,10 +17,7 @@ class DocumentRepoImpl(
 ) : DocumentRepo {
 
     override suspend fun simplerSearch(
-        collectionName: String,
-        row: String,
-        rowValue: String,
-        filter: String
+        query: String
     ): Result<List<DocumentModel?>> =
         withContext(Dispatchers.Default) {
             try {
@@ -29,17 +25,7 @@ class DocumentRepoImpl(
                 val collectionReference = firebaseFirestore.collection(collectionName)
 
                 val documentSnapshots = collectionReference
-                    .where(
-                        when (filter) {
-                            "contains" -> Filter.or(
-                                Filter.equalTo(row, rowValue),
-                                Filter.arrayContains(row, rowValue)
-                            )
-
-                            "equals" -> Filter.equalTo(row, rowValue)
-                            else -> Filter.equalTo(row, rowValue)
-                        }
-                    ).get()
+                    .get()
                     .await()
 
                 val documentModels = documentSnapshots.documents.map {
@@ -64,7 +50,7 @@ class DocumentRepoImpl(
             try {
                 // Step 1: Create a new document reference
                 val documentReference =
-                    firebaseFirestore.collection(DocumentModel.generatedCollectionName).document()
+                    firebaseFirestore.collection(collectionName).document()
 
                 // Step 2: Create a storage reference using the same document ID
                 val storageRef = firebaseStorage.reference

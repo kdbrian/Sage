@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Sage"
 include(":app")
+include(":core")
+include(":core:ui")
+include(":core:domain")

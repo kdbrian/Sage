@@ -1,6 +1,5 @@
 package com.kdbrian.sage.ui.screens
 
-import coil3.compose.AsyncImagePainter
 import com.kdbrian.sage.domain.model.DocumentModel
 
 data class DocumentDetailsUiState(

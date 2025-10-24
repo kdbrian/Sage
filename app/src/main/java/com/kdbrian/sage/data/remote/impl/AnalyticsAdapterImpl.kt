@@ -1,7 +1,6 @@
 package com.kdbrian.sage.data.remote.impl
 
 import androidx.core.os.bundleOf
-import androidx.core.os.toPersistableBundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.kdbrian.sage.domain.repo.AnalyticsAdapter
 import kotlinx.coroutines.Dispatchers

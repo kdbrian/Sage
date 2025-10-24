@@ -2,7 +2,6 @@ package com.kdbrian.sage.ui.state
 
 import android.net.Uri
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.core.net.toFile
 import com.kdbrian.sage.domain.model.DocumentModel
 
 data class CreateScreenUiState(

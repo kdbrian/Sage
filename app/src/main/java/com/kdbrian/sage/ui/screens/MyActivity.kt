@@ -17,6 +17,7 @@ fun MyActivity() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+//                .padding(horizontal = 12.dp)
         ) {
 
         }

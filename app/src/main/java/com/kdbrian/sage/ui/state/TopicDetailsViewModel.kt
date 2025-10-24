@@ -6,7 +6,7 @@ import com.kdbrian.sage.domain.model.DocumentModel
 import com.kdbrian.sage.domain.model.TopicItem
 import com.kdbrian.sage.domain.repo.DocumentRepo
 import com.kdbrian.sage.domain.repo.TopicRepo
-import com.kdbrian.sage.util.AppDataStore
+import com.kdbrian.sage.data.local.AppDataStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first

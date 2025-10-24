@@ -2,16 +2,13 @@ package com.kdbrian.sage.ui.state
 
 import android.content.Context
 import android.net.Uri
-import android.view.textclassifier.ConversationActions
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kdbrian.sage.domain.repo.DocumentRepo
-import com.kdbrian.sage.ui.screens.CreateScreen
 import com.kdbrian.sage.util.FileUtils.getDocumentMetadataMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow

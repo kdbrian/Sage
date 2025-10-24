@@ -22,16 +22,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,14 +42,8 @@ import androidx.navigation.NavHostController
 import com.kdbrian.sage.App
 import com.kdbrian.sage.nav.DocumentDetailsRoute
 import com.kdbrian.sage.ui.composables.ListItemPreview
-import com.kdbrian.sage.ui.state.TopicDetailsUiState
 import com.kdbrian.sage.ui.state.TopicDetailsViewModel
-import com.kdbrian.sage.util.AppDataStore
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
