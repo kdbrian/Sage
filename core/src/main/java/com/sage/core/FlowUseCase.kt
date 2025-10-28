@@ -1,0 +1,20 @@
+package com.sage.core
+
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+
+abstract class FlowUseCase<in Parameters, Success, BusinessRuleError>(private val dispatcher: CoroutineDispatcher) {
+
+    operator fun invoke(parameters: Parameters): Flow<Result<Success, BusinessRuleError>> {
+        return execute(parameters)
+            .catch { e ->
+//                Log.e("FlowUseCase", "An error occurred while executing the use case", e)
+                emit(Result.Error(AppError(e)))
+            }
+            .flowOn(dispatcher)
+    }
+
+    abstract fun execute(parameters: Parameters): Flow<Result<Success, BusinessRuleError>>
+}

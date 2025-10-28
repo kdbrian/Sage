@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
@@ -30,13 +32,16 @@ android {
     }
     kotlin {
         compilerOptions{
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget .JVM_11)
         }
     }
 
 }
 
 dependencies {
+
+    implementation(project(":core"))
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)

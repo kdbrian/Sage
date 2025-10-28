@@ -46,9 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.kdbrian.sage.App
 import com.kdbrian.sage.BuildConfig
-import com.kdbrian.sage.ui.composables.CategoryItem
-import com.kdbrian.sage.ui.composables.CircularProfileAvatar
-import com.kdbrian.sage.ui.composables.RowButton
+import com.sage.ui.composables.CategoryItem
+import com.sage.ui.composables.CircularProfileAvatar
+import com.sage.ui.composables.RowButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

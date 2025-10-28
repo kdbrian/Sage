@@ -1,7 +1,7 @@
 package com.kdbrian.sage.ui.state
 
 import androidx.compose.foundation.text.input.TextFieldState
-import com.kdbrian.sage.domain.model.TopicItem
+import com.sage.domain.domain.model.TopicItem
 
 data class HomeScreenUiState(
     val searchQuery: TextFieldState = TextFieldState(),

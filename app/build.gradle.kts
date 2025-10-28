@@ -64,11 +64,13 @@ dependencies {
 
     implementation(project(":core"))
     implementation(project(":core:ui"))
-    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
+    implementation(project(":feature_document-library"))
 
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)

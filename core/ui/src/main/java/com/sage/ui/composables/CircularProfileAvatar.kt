@@ -1,0 +1,48 @@
+package com.sage.ui.composables
+
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.sage.ui.R
+import com.sage.ui.theme.SageTheme
+
+@Composable
+fun CircularProfileAvatar(
+    modifier: Modifier = Modifier,
+    size: Int = 50,
+    imageUri: String? = null,
+    onImageClick: () -> Unit = {}
+) {
+
+    Surface(
+        onClick = onImageClick,
+        shadowElevation = 3.dp,
+        modifier = modifier
+            .requiredSize((size).dp),
+        shape = CircleShape
+    ) {
+        AsyncImage(
+            model = imageUri,
+            placeholder = painterResource(R.drawable.current_premium),
+            error = painterResource(R.drawable.current_premium),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+
+    }
+}
+
+@Preview
+@Composable
+private fun CircularProfileAvatarPrev() {
+    SageTheme {
+        CircularProfileAvatar()
+    }
+}

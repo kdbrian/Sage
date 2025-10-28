@@ -1,21 +1,17 @@
-package com.kdbrian.sage.di
+ package com.kdbrian.sage.di
 
-import com.kdbrian.sage.data.remote.impl.DocumentRepoImpl
-import com.kdbrian.sage.domain.repo.DocumentRepo
-import com.kdbrian.sage.ui.state.DocumentDetailsScreenViewModel
-import org.koin.core.module.dsl.viewModelOf
+import com.sage.data.remote.impl.DocumentRepoImpl
+import com.sage.domain.domain.repo.DocumentRepo
 import org.koin.dsl.module
 
-val documentModules = module {
+ val documentModules = module {
 
     single<DocumentRepo> {
         DocumentRepoImpl(
-            firebaseFirestore = get(),
-            firebaseStorage = get()
         )
     }
 
-    viewModelOf(::DocumentDetailsScreenViewModel)
+//    viewModelOf(::DocumentDetailsScreenViewModel)
 
 
 }

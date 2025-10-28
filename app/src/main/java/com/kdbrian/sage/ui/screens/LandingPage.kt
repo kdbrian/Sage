@@ -54,7 +54,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
@@ -64,13 +67,12 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.kdbrian.sage.App
 import com.kdbrian.sage.R
-import com.kdbrian.sage.ui.composables.CategoryItem
-import com.kdbrian.sage.ui.composables.CircularProfileAvatar
-import com.kdbrian.sage.ui.composables.RoundedInputField
-import com.kdbrian.sage.ui.composables.TopicCard
 import com.kdbrian.sage.ui.state.HomeScreenUiState
-import com.kdbrian.sage.data.local.AppDataStore
-import kotlinx.coroutines.flow.first
+import com.sage.datastore.AppDataStore
+import com.sage.ui.composables.CategoryItem
+import com.sage.ui.composables.CircularProfileAvatar
+import com.sage.ui.composables.RoundedInputField
+import com.sage.ui.composables.TopicCard
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +91,7 @@ fun LandingPage(
         mutableStateOf(false)
     }
     LaunchedEffect(Unit) {
-        isExpanded = appDataStore.firstTime.first()
+        isExpanded = appDataStore.firstTime()
     }
 
     val focusManager = LocalFocusManager.current
@@ -307,7 +309,7 @@ fun LandingPage(
                     withStyle(
                         SpanStyle(
                             fontWeight = FontWeight.SemiBold,
-                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                            fontStyle = FontStyle.Italic
                         )
                     ) {
                         append("\"finance\"")
@@ -321,8 +323,8 @@ fun LandingPage(
                     )
                 },
                 keyboardOptions = KeyboardOptions(
-                    imeAction = androidx.compose.ui.text.input.ImeAction.Search,
-                    capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
+                    imeAction = ImeAction.Search,
+                    capitalization = KeyboardCapitalization.Words
                 ),
                 keyBoardActions = KeyboardActions(
                     onSearch = {

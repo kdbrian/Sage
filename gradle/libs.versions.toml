@@ -1,6 +1,6 @@
 [versions]
 accompanistPermissions = "0.37.3"
-agp = "8.10.1"
+agp = "8.13.0"
 coilCompose = "3.3.0"
 coilNetworkOkhttp = "3.3.0"
 datastorePreferencesCore = "1.1.7"
@@ -20,10 +20,13 @@ navigationCompose = "2.9.3"
 secretsGradlePlugin = "2.0.1"
 timber = "5.0.1"
 googleGmsGoogleServices = "4.4.3"
-firebaseAnalytics = "23.0.0"
-firebaseFirestore = "26.0.0"
-firebaseStorage = "22.0.0"
+firebaseBom = "34.4.0"
 kotlinSerialization="2.2.20"
+appcompatVersion = "1.7.1"
+materialVersion = "1.13.0"
+appcompat = "1.7.1"
+material = "1.13.0"
+lifecycleViewmodelKtx = "2.9.4"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -57,9 +60,14 @@ koin-core = { module = "io.insert-koin:koin-core" }
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
-firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = {module="com.google.firebase:firebase-analytics", name="firebase-analytics"}
+firebase-firestore = {module="com.google.firebase:firebase-firestore", name="firebase-firestore"}
+firebase-storage = {module="com.google.firebase:firebase-storage", name="firebase-storage"}
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+
 
 
 [plugins]

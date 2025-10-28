@@ -1,0 +1,80 @@
+package com.sage.ui.composables
+
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.sage.ui.theme.SageTheme
+
+@Composable
+fun RoundedInputField(
+    modifier: Modifier = Modifier,
+    singleLine: Boolean = true,
+    enabled: Boolean = true,
+    fieldState: TextFieldState = rememberTextFieldState(),
+    onValueChange: ((String) -> Unit)? = null,
+    placeholder: String = "Placeholder",
+    shape : Shape = RoundedCornerShape(24.dp),
+    leadingIcon: (@Composable () -> Unit)? = null,
+    keyBoardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    colors: TextFieldColors = TextFieldDefaults.colors(
+        unfocusedContainerColor = Color.LightGray,
+        unfocusedPlaceholderColor = Color.White,
+        focusedPlaceholderColor = Color.LightGray,
+        focusedContainerColor = Color.White,
+        unfocusedIndicatorColor = Color.Transparent,
+        focusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent,
+        errorIndicatorColor = Color.Transparent,
+        errorContainerColor = Color.Transparent,
+        focusedTextColor = Color.Black,
+        unfocusedTextColor = Color.Black,
+        cursorColor = Color.Black,
+        unfocusedLeadingIconColor = Color.White,
+        focusedLeadingIconColor = Color.Black,
+    ),
+    supportText : @Composable (() -> Unit)? = null
+) {
+
+    TextField(
+        supportingText = supportText,
+        enabled = enabled,
+        value = fieldState.text.toString(),
+        onValueChange = {
+            onValueChange?.invoke(it) ?: fieldState.setTextAndPlaceCursorAtEnd(it)
+        },
+        modifier = modifier,
+        singleLine = singleLine,
+        minLines = if (singleLine) 1 else 3,
+        shape = shape,
+        placeholder = {
+            Text(text = placeholder, style = MaterialTheme.typography.labelMedium)
+        },
+        leadingIcon = leadingIcon,
+        colors = colors,
+        keyboardActions = keyBoardActions,
+        keyboardOptions = keyboardOptions
+    )
+}
+
+@Preview
+@Composable
+private fun RoundedInputFieldPrev() {
+    SageTheme {
+        RoundedInputField()
+    }
+}

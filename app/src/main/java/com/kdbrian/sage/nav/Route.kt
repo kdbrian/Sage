@@ -7,6 +7,10 @@ sealed class Route
 
 
 @Serializable
+data object OnboardingRoute : Route()
+
+
+@Serializable
 data object GetStartedRoute : Route()
 
 

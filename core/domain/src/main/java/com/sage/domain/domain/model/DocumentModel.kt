@@ -1,6 +1,5 @@
 package com.sage.domain.domain.model
 
-import com.kdbrian.sage.BuildConfig
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -18,8 +17,8 @@ data class DocumentModel(
     val uri: String = "",
 ) {
     companion object {
-        const val defaultCollectionName = "${BuildConfig.APPLICATION_ID}/documents_meta/default" //our inventory
-        const val generatedCollectionName = "${BuildConfig.APPLICATION_ID}/documents_meta/uploaded"//uploaded by user
+        const val defaultCollectionName = "com.sage/documents_meta/default" //our inventory
+        const val generatedCollectionName = "com.sage/documents_meta/uploaded"//uploaded by user
     }
 
 }
