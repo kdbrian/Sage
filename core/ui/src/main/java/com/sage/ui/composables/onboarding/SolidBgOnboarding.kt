@@ -78,8 +78,8 @@ object Screens {
 
     @Composable
     fun WelcomeScreen(
-        onDone : () -> Unit = {},
-        items : List<SolidOnboardingItem> = defaultItems
+        onDone: () -> Unit = {},
+        items: List<SolidOnboardingItem> = defaultItems
     ) {
 
         val pagerState = rememberPagerState { items.size }
@@ -90,153 +90,156 @@ object Screens {
             }
         }
 
-        Scaffold { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .background(
-                        color = currentColor.value,
-                    )
-            ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = currentColor.value,
+                )
+        ) {
 
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
                 ) {
-                    Box(
+                    Text(
+                        text = items[pagerState.currentPage].label,
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontFamily = LocalFontFamily.current,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    )
+
+                    Image(
+                        painter = painterResource(items[pagerState.currentPage].image),
+                        contentDescription = items[pagerState.currentPage].label,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                            .clip(RectangleShape),
+                        contentScale = ContentScale.Fit
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .padding(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                        horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = items[pagerState.currentPage].label,
-                            style = MaterialTheme.typography.displayLarge.copy(
+                            text = items[pagerState.currentPage].title,
+                            style = MaterialTheme.typography.titleLarge.copy(
                                 fontFamily = LocalFontFamily.current,
                                 fontWeight = FontWeight.Bold,
                             )
                         )
 
-                        Image(
-                            painter = painterResource(items[pagerState.currentPage].image),
-                            contentDescription = items[pagerState.currentPage].label,
-                            modifier = Modifier.align(Alignment.Center)
-                                .fillMaxWidth()
-                                .clip(RectangleShape),
-                            contentScale = ContentScale.Fit
+                        Text(
+                            text = items[pagerState.currentPage].supportText,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = LocalFontFamily.current,
+                                fontWeight = FontWeight.Light,
+                            )
                         )
 
-                        Column(
-                            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).padding(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                            horizontalAlignment = Alignment.Start
-                        ){
-                            Text(
-                                text = items[pagerState.currentPage].title,
-                                style = MaterialTheme.typography.titleLarge.copy(
-                                    fontFamily = LocalFontFamily.current,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            )
+                        Spacer(Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp))
 
-                            Text(
-                                text = items[pagerState.currentPage].supportText,
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontFamily = LocalFontFamily.current,
-                                    fontWeight = FontWeight.Light,
-                                )
-                            )
-
-                            Spacer(Modifier.fillMaxWidth().padding(16.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
 
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                modifier = Modifier.padding(6.dp)
                             ) {
 
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                    modifier = Modifier.padding(6.dp)
-                                ) {
-
-                                    repeat(pagerState.pageCount) {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(18.dp)
-                                                .background(
-                                                    color = if (it == pagerState.currentPage) Color.White else currentColor.value,
-                                                    shape = CircleShape
-                                                )
-                                                .border(
-                                                    width = if (it == pagerState.currentPage) 1.dp else 0.dp,
-                                                    color = Color.Black,
-                                                    shape = CircleShape
-                                                )
-                                        )
-                                    }
-                                }
-
-                                Button(
-                                    onClick = {
-                                        coroutineScope.launch {
-                                            if (pagerState.canScrollForward)
-                                                pagerState.animateScrollToPage(pagerState.currentPage.inc())
-                                            else
-                                                onDone()
-                                        }
-                                    },
-                                    shape = RectangleShape,
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF273E47),
-                                        contentColor = Color.White
-                                    )
-                                ) {
-                                    Text(
-                                        text = if (pagerState.canScrollForward) "Next" else "Start",
-                                        style = MaterialTheme.typography.titleMedium.copy(
-                                            fontFamily = LocalFontFamily.current,
-                                        ),
+                                repeat(pagerState.pageCount) {
+                                    Box(
                                         modifier = Modifier
+                                            .size(18.dp)
+                                            .background(
+                                                color = if (it == pagerState.currentPage) Color.White else currentColor.value,
+                                                shape = CircleShape
+                                            )
+                                            .border(
+                                                width = if (it == pagerState.currentPage) 1.dp else 0.dp,
+                                                color = Color.Black,
+                                                shape = CircleShape
+                                            )
                                     )
                                 }
+                            }
 
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        if (pagerState.canScrollForward)
+                                            pagerState.animateScrollToPage(pagerState.currentPage.inc())
+                                        else
+                                            onDone()
+                                    }
+                                },
+                                shape = RectangleShape,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF273E47),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = if (pagerState.canScrollForward) "Next" else "Start",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontFamily = LocalFontFamily.current,
+                                    ),
+                                    modifier = Modifier
+                                )
                             }
 
                         }
+
                     }
                 }
-
-                AnimatedVisibility(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(12.dp),
-                    visible = pagerState.canScrollForward
-                ) {
-                    TextButton(
-                        modifier = Modifier.align(Alignment.TopEnd),
-                        onClick = {
-
-                        }
-                    ) {
-                        Text(
-                            text = "Skip",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontFamily = LocalFontFamily.current,
-                                color = Color.White
-                            )
-                        )
-                    }
-                }
-
             }
-        }
 
+            AnimatedVisibility(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(12.dp),
+                visible = pagerState.canScrollForward
+            ) {
+                TextButton(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    onClick = {
+
+                    }
+                ) {
+                    Text(
+                        text = "Skip",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontFamily = LocalFontFamily.current,
+                            color = Color.White
+                        )
+                    )
+                }
+            }
+
+        }
     }
 
 }
+
 
 @androidx.compose.ui.tooling.preview.Preview
 @androidx.compose.runtime.Composable

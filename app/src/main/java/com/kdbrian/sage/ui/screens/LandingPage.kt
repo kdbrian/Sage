@@ -33,10 +33,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,6 +76,7 @@ import com.sage.ui.composables.CategoryItem
 import com.sage.ui.composables.CircularProfileAvatar
 import com.sage.ui.composables.RoundedInputField
 import com.sage.ui.composables.TopicCard
+import com.sage.ui.composables.locals.LocalFontFamily
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,260 +89,72 @@ fun LandingPage(
     openFYP: () -> Unit = {}
 ) {
 
-    val appDataStore = koinInject<AppDataStore>()
+//    val appDataStore = koinInject<AppDataStore>()
 
     var isExpanded by remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(Unit) {
-        isExpanded = appDataStore.firstTime()
-    }
+//    LaunchedEffect(Unit) {
+//        isExpanded = appDataStore.firstTime()
+//    }
 
     val focusManager = LocalFocusManager.current
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
-        topBar = {
-            Surface {
-                TopAppBar(
-                    modifier = Modifier,
-                    title = {
-                        BasicText(
-                            text = "Hello,",
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            autoSize = TextAutoSize.StepBased(
-                                maxFontSize = 36.sp,
-                                minFontSize = 32.sp,
-                                stepSize = (2.75).sp,
-                            ),
-                            style = MaterialTheme.typography.displaySmall,
-                        )
-                    },
-                    navigationIcon = {
-                        CircularProfileAvatar(
-                            modifier = Modifier.padding(8.dp),
-                            onImageClick = onOpenProfile
-                        )
-                    },
-                    actions = {
-                        AnimatedContent(
-                            targetState = isExpanded,
-                            modifier = Modifier.padding(6.dp)
-                        ) {
-
-                            if (!it) {
-                                Surface(
-                                    shape = CircleShape,
-                                    shadowElevation = 3.dp,
-                                    onClick = { isExpanded = true }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                                        contentDescription = null,
-                                    )
-                                }
-                            } else {
-                                Row(
-                                    modifier = Modifier.padding(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                                ) {
-                                    Surface(
-                                        shape = CircleShape,
-                                        shadowElevation = 3.dp,
-                                        onClick = { isExpanded = false }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Close,
-                                            contentDescription = null
-                                        )
-                                    }
-
-                                    IconButton(onClick = {}) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Schedule,
-                                            contentDescription = null
-                                        )
-                                    }
-
-                                    IconButton(onClick = {}) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Favorite,
-//                                            tint = Color.Red,
-                                            contentDescription = null
-                                        )
-                                    }
-
-                                    IconButton(onClick = {}) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.BookmarkAdded,
-//                                            tint = Color.Green,
-                                            contentDescription = null
-                                        )
-                                    }
-                                }
-
-
-                            }
-
-
-                        }
-
-
-                    }
-                )
-            }
-        }
-    ) { pd ->
+    Scaffold { pd ->
 
         Column(
-            verticalArrangement = Arrangement.SpaceBetween,
+//            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(pd)
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
 
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                ,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "Hi,",
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.displaySmall
+                        .copy(fontWeight = FontWeight.Bold, fontFamily = LocalFontFamily.current)
+                )
 
                 Text(
                     text = "Documents For You",
-                    modifier = Modifier.padding(top = 12.dp, start = 12.dp),
-                    style = MaterialTheme.typography.titleLarge
-                        .copy(fontWeight = FontWeight.Bold)
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.bodyLarge
+                        .copy(fontWeight = FontWeight.Bold, fontFamily = LocalFontFamily.current)
                 )
 
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp)
-                        .padding(horizontal = 12.dp)
-                        .requiredHeightIn(
-                            max = 170.dp,
-                            min = 150.dp
-                        ),
-                    contentColor = Color.White,
-                    shape = RoundedCornerShape(24.dp),
-                    shadowElevation = 3.dp,
-                ) {
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = {},
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors()
+                )
 
-                    AsyncImage(
-                        contentScale = ContentScale.Crop,
-                        contentDescription = null,
-                        model = null,
-                        error = painterResource(R.drawable.paper_avalanche),
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        Color.Black//.copy(alpha = 0.85f)
-                                    )
-                                )
-                            ),
-                        content = {},
-                    )
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(20.dp),
-                        horizontalAlignment = Alignment.Start,
-                    ) {
-//                        Spacer(Modifier.weight(1f))
-
-                        Text(
-                            text = "For You",
-                            style = MaterialTheme.typography.displaySmall
-                        )
-
-
-                        Text(
-                            text = "A collection of what you may like. We keep it updated with every new document you like",
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                textAlign = TextAlign.Start,
-                                fontWeight = FontWeight.Light
-                            )
-                        )
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            CategoryItem(
-                                text = "explore",
-                                icon = {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(15.dp)
-                                    )
-                                },
-                                onClick = openFYP
-                            )
-
-                            TextButton(onClick = {}) {
-                                Text(text = "Shared Documents")
-                            }
-                        }
-
-
-                    }
-
-
-                }
             }
 
-
-            RoundedInputField(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 32.dp),
-                fieldState = uiState.searchQuery,
-                placeholder = buildAnnotatedString {
-                    append("topic:")
-
-                    withStyle(
-                        SpanStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            fontStyle = FontStyle.Italic
-                        )
-                    ) {
-                        append("\"finance\"")
-                    }
-                    append(" or just \"finance\"")
-                }.toString(),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Search,
-                        contentDescription = null
+                    .weight(1f)
+                    .background(
+                        shape = RoundedCornerShape(
+                            topStart = 12.dp,
+                            topEnd = 12.dp
+                        ),
+                        color = Color.White
                     )
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Search,
-                    capitalization = KeyboardCapitalization.Words
-                ),
-                keyBoardActions = KeyboardActions(
-                    onSearch = {
-                        focusManager.clearFocus()
-                        onSearch(uiState.searchQuery.text.toString())
-                    }
-                )
-            )
-
-
-            Column {
+                    .padding(12.dp)
+            ) {
 
                 Text(
-                    text = "Explore",
+                    text = "Explore Topics",
                     modifier = Modifier.padding(top = 12.dp, start = 12.dp),
                     style = MaterialTheme.typography.titleLarge
                         .copy(fontWeight = FontWeight.Bold)

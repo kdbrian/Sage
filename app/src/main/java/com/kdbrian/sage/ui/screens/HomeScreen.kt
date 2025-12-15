@@ -38,30 +38,6 @@ fun HomeScreen(
     val backStackEntryAsState = navHostController.currentBackStackEntryAsState()
 
     Scaffold(
-        bottomBar = {
-            NavigationBar {
-                BottomBarItem.twoScreenItems.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        selected = backStackEntryAsState.value?.destination?.route == item.route.toString(),
-                        onClick = {
-                            navHostController.navigate(item.route) {
-                                popUpTo(HomeScreenRoute) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = {
-                            Icon(imageVector = item.icon, contentDescription = null)
-                        },
-                        label = {
-                            Text(text = item.label)
-                        }
-                    )
-                }
-            }
-        }
     ) {
         NavHost(
             modifier = Modifier.padding(it),
@@ -78,7 +54,6 @@ fun HomeScreen(
                 )
             }
             composable<CreateScreenRoute> {
-//                CreateScreen()
             }
         }
 

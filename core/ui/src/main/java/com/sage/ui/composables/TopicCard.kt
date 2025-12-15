@@ -1,6 +1,8 @@
 package com.sage.ui.composables
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
@@ -39,8 +41,9 @@ fun TopicCard(
         onClick = onClick,
         shape = RoundedCornerShape(50)
     ) {
-        Box(
-            modifier = modifier
+        Column (
+            modifier = Modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = text,

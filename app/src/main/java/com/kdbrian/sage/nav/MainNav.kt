@@ -33,9 +33,6 @@ fun MainNav() {
     val coroutineScope = rememberCoroutineScope()
 
     NavHost(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding(),
         navController = navController,
         startDestination = if (firstTime.value) OnboardingRoute else HomeScreenRoute
     ) {
