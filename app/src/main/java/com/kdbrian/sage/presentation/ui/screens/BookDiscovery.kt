@@ -73,25 +73,6 @@ fun BookDiscoveryScreen(
 
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /*onMenuClick*/ }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = Color.White,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /*onNotificationClick*/ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Notifications,
-                            contentDescription = "Notifications",
-                            tint = Color.White
-                        )
-                    }
-                    Spacer(Modifier.width(8.dp))
-                    // Profile avatar placeholder
                     Box(
                         modifier = Modifier
                             .size(45.dp)
@@ -107,6 +88,16 @@ fun BookDiscoveryScreen(
                             modifier = Modifier.size(20.dp)
                         )
                     }
+
+                },
+                actions = {
+                    IconButton(onClick = { /*onNotificationClick*/ }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Notifications,
+                            contentDescription = "Notifications",
+                            tint = Color.White
+                        )
+                    }
                 }
             )
 
@@ -116,16 +107,11 @@ fun BookDiscoveryScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(top =16.dp),
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
 
-            // Search
-            SearchBar(
-                query = state.searchQuery,
-                onQueryChange = { state = state.copy(searchQuery = it) }
-            )
 
             Spacer(Modifier.height(16.dp))
 
@@ -140,34 +126,40 @@ fun BookDiscoveryScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // Book Card Stack
-            if (filteredBooks.isEmpty()) {
-                EmptyState()
-            } else {
-                BookCardStack(
-                    modifier = Modifier.weight(1f),
-                    books = filteredBooks,
-                    currentIndex = state.currentIndex,
-                    likedBookIds = state.likedBookIds,
-                    onSwipeLeft = {
-                        if (state.currentIndex < filteredBooks.lastIndex)
-                            state = state.copy(currentIndex = state.currentIndex + 1)
-                    },
-                    onSwipeRight = {
-                        if (state.currentIndex < filteredBooks.lastIndex)
-                            state = state.copy(currentIndex = state.currentIndex + 1)
-                    },
-                    onLike = { bookId ->
-                        val newLiked = state.likedBookIds.toMutableSet().apply {
-                            if (contains(bookId)) remove(bookId) else add(bookId)
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ){
+
+                // Book Card Stack
+                if (filteredBooks.isEmpty()) {
+                    EmptyState()
+                } else {
+                    BookCardStack(
+                        modifier = Modifier.fillMaxSize(),
+                        books = filteredBooks,
+                        currentIndex = state.currentIndex,
+                        likedBookIds = state.likedBookIds,
+                        onSwipeLeft = {
+                            if (state.currentIndex < filteredBooks.lastIndex)
+                                state = state.copy(currentIndex = state.currentIndex + 1)
+                        },
+                        onSwipeRight = {
+                            if (state.currentIndex < filteredBooks.lastIndex)
+                                state = state.copy(currentIndex = state.currentIndex + 1)
+                        },
+                        onLike = { bookId ->
+                            val newLiked = state.likedBookIds.toMutableSet().apply {
+                                if (contains(bookId)) remove(bookId) else add(bookId)
+                            }
+                            state = state.copy(likedBookIds = newLiked)
+                        },
+                        onSkip = {
+                            if (state.currentIndex < filteredBooks.lastIndex)
+                                state = state.copy(currentIndex = state.currentIndex + 1)
                         }
-                        state = state.copy(likedBookIds = newLiked)
-                    },
-                    onSkip = {
-                        if (state.currentIndex < filteredBooks.lastIndex)
-                            state = state.copy(currentIndex = state.currentIndex + 1)
-                    }
-                )
+                    )
+                }
             }
         }
     }

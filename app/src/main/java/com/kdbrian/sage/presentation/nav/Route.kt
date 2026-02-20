@@ -26,17 +26,17 @@ data class TopicDetailsRoute(val topicId: String) : Route()
 data class ProfileRoute(val id: String) : Route()
 
 @Serializable
-data object Explore : Route()
+data object ExploreRoute : Route()
 
 @Serializable
-data object Settings : Route()
+data object SettingsRoute : Route()
 
 @Serializable
 data class DocumentDetailsRoute(val docId: String) : Route()
 
 
 @Serializable
-data object Search : Route()
+data object SearchRoute : Route()
 
 
 @Serializable

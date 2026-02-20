@@ -1,5 +1,7 @@
 package com.kdbrian.sage.presentation.ui.screens
 
+import android.R.attr.textColor
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -19,6 +21,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +42,7 @@ import com.kdbrian.sage.domain.model.UserProfile
 import com.kdbrian.sage.domain.model.sampleProfile
 import com.kdbrian.sage.domain.model.sampleStatCards
 import com.kdbrian.sage.presentation.ui.theme.*
+import com.kdbrian.sage.util.Resource
 import com.kdbrian.sage.util.toDisplayString
 
 
@@ -50,31 +54,48 @@ data class ProfileUiState(
 )
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    uiState: ProfileUiState = ProfileUiState(),
-    onBack: () -> Unit = {},
+    uiState: ProfileUiState = ProfileUiState(profile = sampleProfile, statCards = sampleStatCards),
     onSettings: () -> Unit = {},
     onFriendToggled: () -> Unit = {},
     onStatCardClicked: (String) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary),
-    ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { },
+                actions = {
+                    IconButton(
+                        onClick = onSettings,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(40.dp)
+                            .background(CardWhite, RoundedCornerShape(12.dp)),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = TextPrimary,
+                        )
+                    }
+
+                }
+            )
+        },
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .verticalScroll(scrollState),
         ) {
             // ── Teal Header ──────────────────────────────────────────────────
             ProfileHeader(
                 profile = uiState.profile,
-                onBack = onBack,
-                onSettings = onSettings,
                 onFriendToggled = onFriendToggled,
             )
 
@@ -96,8 +117,6 @@ fun ProfileScreen(
 @Composable
 fun ProfileHeader(
     profile: UserProfile,
-    onBack: () -> Unit = {},
-    onSettings: () -> Unit = {},
     onFriendToggled: () -> Unit = {},
 ) {
     Box(
@@ -112,42 +131,10 @@ fun ProfileHeader(
                 .fillMaxWidth()
                 .height(130.dp)
                 .background(
-                    color = TealHeader,
+                    color = YellowPrimary,
                     shape = RoundedCornerShape(bottomStart = 0.dp, bottomEnd = 0.dp),
                 ),
-        ) {
-            // Back button
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(8.dp)
-                    .size(40.dp)
-                    .background(CardWhite, RoundedCornerShape(12.dp)),
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = TextPrimary,
-                )
-            }
-
-            // Settings button
-            IconButton(
-                onClick = onSettings,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-                    .size(40.dp)
-                    .background(CardWhite, RoundedCornerShape(12.dp)),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings",
-                    tint = TextPrimary,
-                )
-            }
-        }
+        )
 
         // ── Avatar — overlaps header / body boundary ──────────────────────
         ProfileAvatar(
@@ -156,16 +143,15 @@ fun ProfileHeader(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = 16.dp)
-                .offset(y = 8.dp),
+                .offset(y = 12.dp),
         )
 
         // ── Friend button ─────────────────────────────────────────────────
-        FriendButton(
-            isFriend = profile.isFriend,
+        UploadButton(
             onClick = onFriendToggled,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 0.dp),
+                .padding(end = 16.dp, bottom = 4.dp),
         )
     }
 
@@ -203,43 +189,53 @@ fun ProfileAvatar(
 
 
 @Composable
-fun FriendButton(
-    isFriend: Boolean,
+fun UploadButton(
+    uploadState: Resource<Boolean> = Resource.Idle(),
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val borderColor by animateColorAsState(
-        targetValue = if (isFriend) TealHeader else RecordBadge,
+        targetValue = if (uploadState is Resource.Success && uploadState.data == true) TealHeader else RecordBadge,
         animationSpec = spring(stiffness = Spring.StiffnessMedium),
         label = "FriendBorderColor",
     )
-    val textColor by animateColorAsState(
-        targetValue = if (isFriend) TealHeader else RecordBadge,
-        label = "FriendTextColor",
-    )
 
-    OutlinedButton(
-        onClick = onClick,
-        shape = RoundedCornerShape(50),
-        border = androidx.compose.foundation.BorderStroke(1.5.dp, borderColor),
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = textColor,
-            containerColor = CardWhite,
-        ),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
-        modifier = modifier.height(36.dp),
+    AnimatedContent(
+        targetState = uploadState,
+        modifier = modifier,
     ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = null,
-            modifier = Modifier.size(16.dp),
-        )
-        Spacer(Modifier.width(4.dp))
-        Text(
-            text = if (isFriend) "Friends" else "+ Friends",
-            fontSize = 13.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
+        when (it) {
+
+            is Resource.Idle -> {
+                OutlinedButton(
+                    onClick = onClick,
+                    shape = RoundedCornerShape(50),
+                ) {
+                    Text("Upload")
+                }
+            }
+
+            is Resource.Loading -> {
+                val progress = it.progress
+                CircularProgressIndicator(
+                    progress = progress,
+                    trackColor = Color.Transparent,
+                    color = OrangeActive
+                )
+            }
+
+            is Resource.Success -> {
+                Text("Success")
+            }
+
+            is Resource.Error -> {
+                Text("Error")
+            }
+
+
+        }
+
+
     }
 }
 
@@ -433,7 +429,6 @@ fun ProfileScreenPreview() {
                 profile = sampleProfile,
                 statCards = sampleStatCards,
             ),
-            onBack = {},
             onSettings = {},
             onFriendToggled = {},
             onStatCardClicked = {},

@@ -2,9 +2,11 @@ package com.kdbrian.sage.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.kdbrian.sage.R
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -33,3 +35,17 @@ val Typography = Typography(
     */
 )
 
+val Lora by lazy {
+    FontFamily(
+        Font(R.font.lora_regular, FontWeight.Normal),
+        Font(R.font.lora_bold, FontWeight.Bold),
+        Font(R.font.lora_bolditalic, FontWeight.Bold),
+        Font(R.font.lora_italic, FontWeight.Normal),
+        Font(R.font.lora_semibold, FontWeight.SemiBold),
+        Font(R.font.lora_medium, FontWeight.Medium),
+        Font(R.font.lora_mediumitalic, FontWeight.Medium),
+        Font(R.font.lora_semibolditalic, FontWeight.SemiBold),
+
+
+        )
+}

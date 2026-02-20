@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.ChevronLeft
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +32,10 @@ import com.kdbrian.sage.domain.model.DocumentModel.Companion.sampleBooks
 import com.kdbrian.sage.domain.model.DocumentModel.Companion.sampleCategories
 import com.kdbrian.sage.presentation.ui.composables.CategoryRail
 import com.kdbrian.sage.presentation.ui.composables.DocumentList
+import com.kdbrian.sage.presentation.ui.composables.SearchBar
+import com.kdbrian.sage.presentation.ui.theme.RecordBadge
 import com.kdbrian.sage.presentation.ui.theme.SageTheme
+import com.kdbrian.sage.presentation.ui.theme.YellowPrimary
 
 data class CategoriesUiState(
     val categories: List<CategoryModel> = emptyList(),
@@ -38,6 +43,7 @@ data class CategoriesUiState(
     val documents: List<DocumentModel> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
+    val searchQuery: String = "",
     val accentColors: Map<String, Color> = emptyMap(),
 )
 
@@ -55,51 +61,69 @@ fun CategoriesScreen(
     val categoryListState = rememberLazyListState()
     val documentListState = rememberLazyListState()
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = "Categories",
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.Rounded.ChevronLeft,
-                        contentDescription = "Back",
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Explore",
+                        style = MaterialTheme.typography.titleLarge,
                     )
-                }
-            },
-        )
-        Row(
+                },
+                actions = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Rounded.FavoriteBorder,
+                            tint = RecordBadge,
+                            contentDescription = "Favorites",
+                        )
+                    }
+                },
+            )
+        }
+    ) { paddingValues ->
+
+        Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
+                .padding(8.dp)
+            ,
         ) {
-            // ── Left: Category Rail ──────────────────────
-            CategoryRail(
-                categories = uiState.categories,
-                selectedId = uiState.selectedCategoryId,
-                listState = categoryListState,
-                onCategorySelected = onCategorySelected,
-                modifier = Modifier
-                    .width(56.dp)
-                    .fillMaxHeight(),
+
+            // Search
+            SearchBar(
+                query = uiState.searchQuery,
+                onQueryChange = { }
             )
 
-            // ── Right: Document List ─────────────────────
-            DocumentList(
-                documents = uiState.documents,
-                accentColors = uiState.accentColors,
-                listState = documentListState,
-                onAccentColorResolved = onAccentColorResolved,
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-            )
+                    .fillMaxSize()
+            ) {
+                // ── Left: Category Rail ──────────────────────
+                CategoryRail(
+                    categories = uiState.categories,
+                    selectedId = uiState.selectedCategoryId,
+                    listState = categoryListState,
+                    onCategorySelected = onCategorySelected,
+                    modifier = Modifier
+                        .width(56.dp)
+                        .fillMaxHeight(),
+                )
+
+                // ── Right: Document List ─────────────────────
+                DocumentList(
+                    documents = uiState.documents,
+                    accentColors = uiState.accentColors,
+                    listState = documentListState,
+                    onAccentColorResolved = onAccentColorResolved,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                )
+            }
         }
     }
 }

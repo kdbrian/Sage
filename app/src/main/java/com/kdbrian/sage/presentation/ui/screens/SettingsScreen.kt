@@ -71,7 +71,7 @@ data class PremiumStatusInfo(
 
 
 data class SettingsUiState(
-    val menuItems: List<SettingsMenuItem> = emptyList(),
+    val menuItems: List<SettingsMenuItem> = defaultMenuItems,
     val premium: PremiumStatusInfo = PremiumStatusInfo(),
     val referral: ReferralInfo = ReferralInfo(),
     val isLoading: Boolean = false,
@@ -79,10 +79,10 @@ data class SettingsUiState(
 )
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     uiState: SettingsUiState = SettingsUiState(),
-    onNavigate: (SettingsDestination) -> Unit = {} = {},
     onBack: () -> Unit = {},
     onMenuItemClicked: (SettingsDestination) -> Unit = {},
     onPremiumClicked: () -> Unit = {},
@@ -90,79 +90,66 @@ fun SettingsScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PageBg)
-            .verticalScroll(scrollState),
-    ) {
-        // ── Top bar ──────────────────────────────────────────────────────────
-        SettingsTopBar(onBack = onBack)
-
-        Spacer(Modifier.height(16.dp))
-
-        // ── Main menu card ───────────────────────────────────────────────────
-        SettingsMenuCard(
-            items = uiState.menuItems,
-            onItemClicked = onMenuItemClicked,
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        // ── Premium status card ──────────────────────────────────────────────
-        PremiumStatusCard(
-            premium = uiState.premium,
-            onClick = onPremiumClicked,
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        // ── Referral banner ──────────────────────────────────────────────────
-        ReferralBanner(
-            referral = uiState.referral,
-            onClick = onReferralClicked,
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
-
-        Spacer(Modifier.height(32.dp))
-    }
-}
-
-
-@Composable
-fun SettingsTopBar(onBack: () -> Unit = {}) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-    ) {
-        // Back button — rounded square pill
-        IconButton(
-            onClick = onBack,
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .size(40.dp)
-                .shadow(2.dp, RoundedCornerShape(12.dp))
-                .clip(RoundedCornerShape(12.dp))
-                .background(CardBg),
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = IconTint,
-                modifier = Modifier.size(20.dp),
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("Settings") },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .shadow(2.dp, RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(CardBg),
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = IconTint,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                }
             )
         }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(scrollState),
+        ) {
 
-        Text(
-            text = "Settings",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = TextPrimary,
-            modifier = Modifier.align(Alignment.Center),
-        )
+            Spacer(Modifier.height(16.dp))
+
+            // ── Main menu card ───────────────────────────────────────────────────
+            SettingsMenuCard(
+                items = uiState.menuItems,
+                onItemClicked = onMenuItemClicked,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            // ── Premium status card ──────────────────────────────────────────────
+            PremiumStatusCard(
+                premium = uiState.premium,
+                onClick = onPremiumClicked,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            // ── Referral banner ──────────────────────────────────────────────────
+            ReferralBanner(
+                referral = uiState.referral,
+                onClick = onReferralClicked,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+
+            Spacer(Modifier.height(32.dp))
+        }
     }
 }
 
@@ -214,7 +201,7 @@ fun SettingsMenuRow(
             .fillMaxWidth()
             .graphicsLayer { scaleX = scale; scaleY = scale }
             .clickable(interactionSource = ripple, indication = null, onClick = onClick)
-            .padding(horizontal = 18.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // Icon in a soft rounded box outline
@@ -262,9 +249,6 @@ fun SettingsDestination.toIcon(): ImageVector = when (this) {
     SettingsDestination.REFER_A_FRIEND -> Icons.Outlined.CardGiftcard
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Default data
-// ─────────────────────────────────────────────────────────────────────────────
 
 private val defaultMenuItems = listOf(
     SettingsMenuItem(destination = SettingsDestination.EMAIL, label = "Email"),
@@ -277,9 +261,6 @@ private val defaultMenuItems = listOf(
     SettingsMenuItem(destination = SettingsDestination.PRIVACY, label = "Privacy"),
 )
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Previews
-// ─────────────────────────────────────────────────────────────────────────────
 
 @Preview(showBackground = true, backgroundColor = 0xFFF2F2F7, widthDp = 375, heightDp = 720)
 @Composable

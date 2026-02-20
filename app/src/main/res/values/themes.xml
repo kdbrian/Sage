@@ -2,10 +2,7 @@
 <resources>
 
     <style name="Theme.Sage" parent="android:Theme.Material.Light.NoActionBar" >
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="fontFamily">@font/lora_regular</item>
+        <item name="android:fontFamily">@font/lora_regular</item>
     </style>
 </resources>
