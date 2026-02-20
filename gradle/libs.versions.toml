@@ -1,29 +1,29 @@
 [versions]
 accompanistPermissions = "0.37.3"
-agp = "8.10.1"
+agp = "8.13.2"
 coilCompose = "3.3.0"
-coilNetworkOkhttp = "3.3.0"
-datastorePreferencesCore = "1.1.7"
-koinBom = "4.1.0"
-kotlin = "2.2.0"
-coreKtx = "1.16.0"
+datastorePreferencesCore = "1.2.0"
+koinBom = "4.1.1"
+kotlin = "2.3.10"
+coreKtx = "1.17.0"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-kotlinxSerializationJson = "1.9.0"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+kotlinxSerializationJson = "1.10.0"
 libraryBase = "3.0.0"
-lifecycleRuntimeKtx = "2.9.2"
-activityCompose = "1.10.1"
-composeBom = "2025.07.00"
-junitJupiter = "5.8.1"
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.12.4"
+composeBom = "2026.02.00"
+junitJupiter = "6.0.3"
 materialIconsExtended = "1.7.8"
-navigationCompose = "2.9.3"
+navigationCompose = "2.9.7"
+room = "2.8.4"
 secretsGradlePlugin = "2.0.1"
 timber = "5.0.1"
-googleGmsGoogleServices = "4.4.3"
+googleGmsGoogleServices = "4.4.4"
 firebaseAnalytics = "23.0.0"
-firebaseFirestore = "26.0.0"
-firebaseStorage = "22.0.0"
+firebaseFirestore = "26.1.0"
+firebaseStorage = "22.0.1"
 
 
 [libraries]
@@ -34,7 +34,10 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

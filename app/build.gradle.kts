@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 val secrets = Properties()
@@ -20,19 +21,18 @@ plugins {
     kotlin("plugin.serialization") version "2.2.0"
     alias(libs.plugins.google.gms.google.services)
     id("com.google.devtools.ksp")
-    id ("io.realm.kotlin")
 }
 
 android {
     namespace = "com.kdbrian.sage"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.kdbrian.sage"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,21 +50,9 @@ android {
     flavorDimensions += "env"
 
     productFlavors {
-        create("dev") {
-            dimension = "env"
-            val envValue = getSecret("ENV") ?: "dev"
-            buildConfigField("String", "ENV", "\"$envValue\"")
-        }
-        create("staging") {
-            dimension = "env"
-            val envValue = getSecret("ENV") ?: "staging"
-            buildConfigField("String", "ENV", "\"$envValue\"")
-        }
-        create("prod") {
-            dimension = "env"
-            val envValue = getSecret("ENV") ?: "prod"
-            buildConfigField("String", "ENV", "\"$envValue\"")
-        }
+        create("dev")
+        create("staging")
+        create("prod")
     }
 
     compileOptions {
@@ -72,8 +60,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+       compilerOptions {
+           jvmTarget.set(JvmTarget.JVM_11)
+       }
     }
 
     buildFeatures {
@@ -136,12 +126,15 @@ dependencies {
     implementation(libs.accompanist.permissions)
 
     //room
-//    val room_version = "2.7.2"
-//    implementation("androidx.room:room-runtime:$room_version")
-//    ksp("androidx.room:room-compiler:$room_version")
-//    implementation("androidx.room:room-ktx:${room_version}")
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     //realm
     implementation(libs.library.base)
+
+    //coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
 }

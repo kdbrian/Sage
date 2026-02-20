@@ -16,8 +16,8 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kdbrian.sage.domain.model.TopicItem
-import com.kdbrian.sage.nav.MainNav
-import com.kdbrian.sage.ui.theme.SageTheme
+import com.kdbrian.sage.presentation.nav.MainNav
+import com.kdbrian.sage.presentation.ui.theme.SageTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
