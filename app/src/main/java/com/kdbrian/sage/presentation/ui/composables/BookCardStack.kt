@@ -13,6 +13,7 @@ import kotlin.collections.getOrNull
 
 @Composable
 fun BookCardStack(
+    modifier: Modifier = Modifier,
     books: List<DocumentModel>,
     currentIndex: Int,
     likedBookIds: Set<String>,
@@ -24,8 +25,8 @@ fun BookCardStack(
     val currentBook = books.getOrNull(currentIndex) ?: return
 
     Column(
-        modifier = Modifier.Companion.fillMaxWidth(),
-        horizontalAlignment = Alignment.Companion.CenterHorizontally
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BookCard(
             book = currentBook,
@@ -34,14 +35,5 @@ fun BookCardStack(
             onSwipeRight = onSwipeRight
         )
 
-        Spacer(Modifier.Companion.height(24.dp))
-
-        // Action Buttons
-        ActionButtonRow(
-            isLiked = currentBook.id in likedBookIds,
-            onSkip = onSkip,
-            onShare = { /* share */ },
-            onLike = { onLike(currentBook.id) }
-        )
     }
 }

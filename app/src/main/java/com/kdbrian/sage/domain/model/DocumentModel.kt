@@ -13,6 +13,7 @@ data class DocumentModel(
     val category: String="",
     val rating: Float = 0f,
     val pageCount: Int = 0,
+    val chapterCount: Int = 0,
     val publicationAt: String? = null,
     val topics: List<String> = emptyList(),
     val publisher: String = "",//not firebase uid but will be loaded into user account and offloaded

@@ -11,6 +11,7 @@ import kotlin.collections.filter
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -40,6 +41,7 @@ data class BookDiscoveryState(
 )
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookDiscoveryScreen(
     initialState: BookDiscoveryState = BookDiscoveryState(
@@ -62,26 +64,65 @@ fun BookDiscoveryScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            BookBottomNavBar()
+        topBar = {
+            // Top Bar
+            TopAppBar(
+//                windowInsets = TopAppBarDefaults.windowInsets,
+                modifier = Modifier,
+                title = {
+
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /*onMenuClick*/ }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu",
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { /*onNotificationClick*/ }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Notifications,
+                            contentDescription = "Notifications",
+                            tint = Color.White
+                        )
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    // Profile avatar placeholder
+                    Box(
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.secondary)
+                            .clickable(onClick = { /*onProfileClick*/ }),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile",
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            )
+
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(top = 16.dp)
+                .padding(top =16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            // Top Bar
-            TopBarRow(
-                onNotificationClick = { /* navigate */ },
-                onProfileClick = { /* navigate */ }
-            )
-
-            Spacer(Modifier.height(16.dp))
 
             // Search
-            SearchBar (
+            SearchBar(
                 query = state.searchQuery,
                 onQueryChange = { state = state.copy(searchQuery = it) }
             )
@@ -104,6 +145,7 @@ fun BookDiscoveryScreen(
                 EmptyState()
             } else {
                 BookCardStack(
+                    modifier = Modifier.weight(1f),
                     books = filteredBooks,
                     currentIndex = state.currentIndex,
                     likedBookIds = state.likedBookIds,
@@ -130,53 +172,6 @@ fun BookDiscoveryScreen(
         }
     }
 }
-
-
-@Composable
-private fun TopBarRow(
-    onNotificationClick: () -> Unit,
-    onProfileClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Menu,
-            contentDescription = "Menu",
-            tint = Color.White,
-            modifier = Modifier.size(28.dp)
-        )
-        Spacer(Modifier.weight(1f))
-        IconButton(onClick = onNotificationClick) {
-            Icon(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = "Notifications",
-                tint = Color.White
-            )
-        }
-        Spacer(Modifier.width(8.dp))
-        // Profile avatar placeholder
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary)
-                .clickable(onClick = onProfileClick),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "Profile",
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-    }
-}
-
 
 
 @Preview(showBackground = true, backgroundColor = 0xFF1A1A2E)

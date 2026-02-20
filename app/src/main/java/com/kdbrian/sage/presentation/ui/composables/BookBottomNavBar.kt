@@ -1,5 +1,6 @@
 package com.kdbrian.sage.presentation.ui.composables
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -30,8 +31,7 @@ fun BookBottomNavBar() {
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = Color.Companion.Gray,
-                    indicatorColor = Color.Companion.Transparent
+                    unselectedIconColor = Color.Companion.White,
                 )
             )
         }

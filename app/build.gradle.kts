@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
     implementation("com.google.firebase:firebase-auth:24.0.1")
+    implementation(libs.androidx.palette.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter)

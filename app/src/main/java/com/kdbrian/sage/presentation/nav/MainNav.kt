@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kdbrian.sage.presentation.ui.screens.BookDiscoveryScreen
+import com.kdbrian.sage.presentation.ui.screens.HomeScreen
 
 @Composable
 fun MainNav() {
@@ -21,8 +22,20 @@ fun MainNav() {
     ) {
 
         composable<HomeScreenRoute> {
-            BookDiscoveryScreen()
+            HomeScreen()
         }
+
+        composable<Search> {
+            HomeScreen()
+        }
+
+
+
+
+        composable<ProfileRoute> {
+            HomeScreen()
+        }
+
 
 
     }

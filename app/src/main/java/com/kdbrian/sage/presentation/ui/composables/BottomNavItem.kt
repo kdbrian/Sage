@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 enum class BottomNavItem(val icon: ImageVector, val label: String) {
     Home(Icons.Default.Home, "Home"),
     Discover(Icons.Default.Explore, "Discover"),
-    Saved(Icons.Default.Favorite, "Saved"),
     Profile(Icons.Default.Person, "Profile")
 }
 
