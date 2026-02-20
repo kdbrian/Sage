@@ -24,7 +24,7 @@ googleGmsGoogleServices = "4.4.4"
 firebaseAnalytics = "23.0.0"
 firebaseFirestore = "26.1.0"
 firebaseStorage = "22.0.1"
-
+paging_version = "3.4.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -64,7 +64,11 @@ koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+paging-runtime={module="androidx.paging:paging-runtime", version.ref="paging_version"}
+paging-compose={module="androidx.paging:paging-compose", version.ref="paging_version"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

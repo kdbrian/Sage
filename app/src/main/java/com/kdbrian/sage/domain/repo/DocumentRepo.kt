@@ -1,25 +1,29 @@
 package com.kdbrian.sage.domain.repo
 
 import android.net.Uri
+import androidx.paging.PagingData
 import com.kdbrian.sage.domain.model.DocumentModel
+import com.kdbrian.sage.util.Resource
+import kotlinx.coroutines.flow.Flow
+
+typealias UploadState = Resource<DocumentModel>
+
 
 interface DocumentRepo {
 
-    suspend fun simplerSearch(collectionName : String = DocumentModel.generatedCollectionName, row : String, rowValue : String, filter: String): Result<List<DocumentModel?>>
+    suspend fun simplerSearch(query: String): Result<List<DocumentModel?>>
 
-    suspend fun saveDocumentMetaData(uri: Uri, documentModel: DocumentModel): Result<Boolean>
+    fun saveDocumentMetaData(uri: Uri): Flow<UploadState>
 
-    suspend fun loadDefaultDocumentsAll(): Result<List<DocumentModel?>>
+    fun loadDefaultDocumentsAll(): Flow<PagingData<DocumentModel>>
 
-    suspend fun loadUploadedDocumentsAll(): Result<List<DocumentModel?>>
+    fun loadUploadedDocumentsAll(): Flow<PagingData<DocumentModel>>
 
-    suspend fun loadDefaultDocumentsByTopic(topicId: String): Result<List<DocumentModel?>>
+    fun loadDefaultDocumentsByTopic(topicId: String): Flow<PagingData<DocumentModel>>
 
-    suspend fun loadUploadedDocumentsByTopic(topicId: String): Result<List<DocumentModel?>>
+    fun loadUploadedDocumentsByTopic(topicId: String): Flow<PagingData<DocumentModel>>
 
-    suspend fun loadDefaultDocumentsByQuery(query: String): Result<List<DocumentModel?>>
+    fun loadDefaultDocumentsByQuery(query: String): Flow<PagingData<DocumentModel>>
 
-    suspend fun loadUploadedDocumentsByQuery(query: String): Result<List<DocumentModel?>>
-
-
+    fun loadUploadedDocumentsByQuery(query: String): Flow<PagingData<DocumentModel>>
 }

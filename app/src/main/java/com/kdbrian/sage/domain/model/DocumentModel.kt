@@ -1,15 +1,16 @@
 package com.kdbrian.sage.domain.model
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.kdbrian.sage.BuildConfig
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class DocumentModel(
-    val id: String,
-    val title: String,
-    val author: String,
-    val coverUrl: String,
-    val category: String,
+    val id: String="",
+    val title: String="",
+    val author: String="",
+    val coverUrl: String="",
+    val category: String="",
     val rating: Float = 0f,
     val pageCount: Int = 0,
     val publicationAt: String? = null,
@@ -69,4 +70,51 @@ data class DocumentModel(
     }
 
 }
+
+
+
+
+// DocumentModelExt.kt — Firestore mapping helpers
+
+fun DocumentModel.toMap(): Map<String, Any?> = mapOf(
+    "id"               to id,
+    "title"            to title,
+    "author"           to author,
+    "coverUrl"         to coverUrl,
+    "category"         to category,
+    "rating"           to rating,
+    "pageCount"        to pageCount,
+    "publicationAt"    to publicationAt,
+    "topics"           to topics,
+    "publisher"        to publisher,
+    "summary"          to summary,           // defaults ""
+    "isAiSummarizable" to isAiSummarizable,
+    "fileInfo"         to fileInfo,
+    "aiSummary"        to aiSummary,         // defaults ""
+    "description"      to description,
+    "uri"              to uri,
+)
+
+fun DocumentSnapshot.toDocumentModel(): DocumentModel? = runCatching {
+    DocumentModel(
+        id               = getString("id") ?: id,
+        title            = getString("title") ?: "",
+        author           = getString("author") ?: "",
+        coverUrl         = getString("coverUrl") ?: "",
+        category         = getString("category") ?: "",
+        rating           = (get("rating") as? Number)?.toFloat() ?: 0f,
+        pageCount        = (get("pageCount") as? Number)?.toInt() ?: 0,
+        publicationAt    = getString("publicationAt"),
+        topics           = (get("topics") as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
+        publisher        = getString("publisher") ?: "",
+        summary          = getString("summary") ?: "",
+        isAiSummarizable = getString("isAiSummarizable") ?: "",
+        fileInfo         = getString("fileInfo") ?: "",
+        aiSummary        = getString("aiSummary") ?: "",
+        description      = getString("description") ?: "",
+        uri              = getString("uri") ?: "",
+    )
+}.getOrNull()
+
+
 
