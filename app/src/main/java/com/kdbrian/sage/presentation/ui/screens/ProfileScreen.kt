@@ -50,6 +50,7 @@ data class ProfileUiState(
     val profile: UserProfile = UserProfile(),
     val statCards: List<StatCard> = emptyList(),
     val isLoading: Boolean = false,
+    val userProfile : UserProfile? = null,
     val error: String? = null,
 )
 

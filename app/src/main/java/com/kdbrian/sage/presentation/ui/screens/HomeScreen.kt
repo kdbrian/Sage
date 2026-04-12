@@ -9,17 +9,25 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.kdbrian.sage.presentation.nav.ExploreRoute
 import com.kdbrian.sage.presentation.nav.ProfileRoute
 import com.kdbrian.sage.presentation.nav.SearchRoute
 import com.kdbrian.sage.presentation.nav.SettingsRoute
 import com.kdbrian.sage.presentation.ui.composables.BookBottomNavBar
 import com.kdbrian.sage.presentation.ui.theme.SageTheme
+import com.kdbrian.sage.presentation.viewmodel.MainViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    mainViewModel: MainViewModel = koinViewModel()
 ) {
+
+    val lazyBooks = mainViewModel.books.collectAsLazyPagingItems()
+
+
     Scaffold(
         bottomBar = {
             BookBottomNavBar(
@@ -29,26 +37,27 @@ fun HomeScreen(
     ) { _ ->
 
         NavHost(
-//            modifier = Modifier.padding(paddingValues),
             navController = navController,
             startDestination = ExploreRoute
         ) {
 
-            composable<ExploreRoute>{
-                BookDiscoveryScreen()
+            composable<ExploreRoute> {
+                BookDiscoveryScreen(
+                    books = lazyBooks
+                )
             }
-            composable<SearchRoute>{
-                CategoriesScreen ()
+            composable<SearchRoute> {
+                CategoriesScreen()
             }
-            composable<ProfileRoute>{
-                ProfileScreen (
+            composable<ProfileRoute> {
+                ProfileScreen(
                     onSettings = {
                         navController.navigate(SettingsRoute)
                     }
                 )
             }
 
-            composable<SettingsRoute>{
+            composable<SettingsRoute> {
                 SettingsScreen(
                     onBack = {
                         navController.popBackStack()

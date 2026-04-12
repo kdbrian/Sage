@@ -4,36 +4,33 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.kdbrian.sage.domain.model.DocumentModel
 import kotlin.collections.getOrNull
 
 @Composable
 fun BookCardStack(
     modifier: Modifier = Modifier,
-    books: List<DocumentModel>,
-    currentIndex: Int,
-    likedBookIds: Set<String>,
-    onSwipeLeft: () -> Unit,
-    onSwipeRight: () -> Unit,
-    onLike: (String) -> Unit,
-    onSkip: () -> Unit
+    books: LazyPagingItems<DocumentModel>,
 ) {
-    val currentBook = books.getOrNull(currentIndex) ?: return
+    val pagerState = rememberPagerState { books.itemCount }
 
-    Column(
+    HorizontalPager(
+        state = pagerState,
         modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BookCard(
-            book = currentBook,
-            isLiked = currentBook.id in likedBookIds,
-            onSwipeLeft = onSwipeLeft,
-            onSwipeRight = onSwipeRight
-        )
+        val currentBook = books[it]
+        currentBook?.let {
+            BookCard(
+                book = currentBook,
+            )
+        }
 
     }
 }

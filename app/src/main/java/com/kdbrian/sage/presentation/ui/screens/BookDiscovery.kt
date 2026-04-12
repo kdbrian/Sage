@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.kdbrian.sage.presentation.ui.composables.BookCardStack
 import com.kdbrian.sage.presentation.ui.composables.SearchBar
 import com.kdbrian.sage.presentation.ui.theme.SageTheme
@@ -33,41 +34,28 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BookDiscoveryState(
     val categories: List<CategoryModel> = emptyList(),
-    val books: List<DocumentModel> = emptyList(),
     val selectedCategoryId: String = "",
-    val searchQuery: String = "",
     val likedBookIds: Set<String> = emptySet(),
-    val currentIndex: Int = 0
 )
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookDiscoveryScreen(
-    initialState: BookDiscoveryState = BookDiscoveryState(
+    books : LazyPagingItems<DocumentModel>,
+    state: BookDiscoveryState = BookDiscoveryState(
         categories = sampleCategories,
-        books = sampleBooks,
         selectedCategoryId = sampleCategories.first().id
-    )
+    ),
+    onCategorySelect : (String) -> Unit = {}
 ) {
-    var state by remember { mutableStateOf(initialState) }
-
-    val filteredBooks = remember(state.selectedCategoryId, state.books, state.searchQuery) {
-        state.books
-            .filter { it.category == state.selectedCategoryId }
-            .filter {
-                state.searchQuery.isBlank() ||
-                        it.title.contains(state.searchQuery, ignoreCase = true) ||
-                        it.author.contains(state.searchQuery, ignoreCase = true)
-            }
-    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             // Top Bar
+
             TopAppBar(
-//                windowInsets = TopAppBarDefaults.windowInsets,
                 modifier = Modifier,
                 title = {
 
@@ -119,9 +107,7 @@ fun BookDiscoveryScreen(
             CategoryChipRow(
                 categories = state.categories,
                 selectedId = state.selectedCategoryId,
-                onSelect = { id ->
-                    state = state.copy(selectedCategoryId = id, currentIndex = 0)
-                }
+                onSelect = onCategorySelect
             )
 
             Spacer(Modifier.height(24.dp))
@@ -132,32 +118,12 @@ fun BookDiscoveryScreen(
             ){
 
                 // Book Card Stack
-                if (filteredBooks.isEmpty()) {
+                if (books.loadState.isIdle) {
                     EmptyState()
                 } else {
                     BookCardStack(
                         modifier = Modifier.fillMaxSize(),
-                        books = filteredBooks,
-                        currentIndex = state.currentIndex,
-                        likedBookIds = state.likedBookIds,
-                        onSwipeLeft = {
-                            if (state.currentIndex < filteredBooks.lastIndex)
-                                state = state.copy(currentIndex = state.currentIndex + 1)
-                        },
-                        onSwipeRight = {
-                            if (state.currentIndex < filteredBooks.lastIndex)
-                                state = state.copy(currentIndex = state.currentIndex + 1)
-                        },
-                        onLike = { bookId ->
-                            val newLiked = state.likedBookIds.toMutableSet().apply {
-                                if (contains(bookId)) remove(bookId) else add(bookId)
-                            }
-                            state = state.copy(likedBookIds = newLiked)
-                        },
-                        onSkip = {
-                            if (state.currentIndex < filteredBooks.lastIndex)
-                                state = state.copy(currentIndex = state.currentIndex + 1)
-                        }
+                        books = books,
                     )
                 }
             }
@@ -170,6 +136,6 @@ fun BookDiscoveryScreen(
 @Composable
 fun BookDiscoveryPreview() {
     SageTheme {
-        BookDiscoveryScreen()
+//        BookDiscoveryScreen()
     }
 }

@@ -11,6 +11,8 @@ typealias UploadState = Resource<DocumentModel>
 
 interface DocumentRepo {
 
+    suspend fun toggleFavourite(documentModel: DocumentModel): Result<Boolean>
+
     suspend fun simplerSearch(query: String): Result<List<DocumentModel?>>
 
     fun saveDocumentMetaData(uri: Uri): Flow<UploadState>

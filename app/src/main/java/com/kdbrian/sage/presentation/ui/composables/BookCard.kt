@@ -41,90 +41,61 @@ import com.kdbrian.sage.domain.model.DocumentModel
 @Composable
 fun BookCard(
     book: DocumentModel,
-    isLiked: Boolean,
-    onSwipeLeft: () -> Unit,
-    onSwipeRight: () -> Unit
 ) {
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    val animatedOffset by animateFloatAsState(
-        targetValue = offsetX,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        label = "cardOffset"
-    )
 
     Box(
-        modifier = Modifier.Companion
+        modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .graphicsLayer { translationX = animatedOffset }
-            .pointerInput(book.id) {
-                detectHorizontalDragGestures(
-                    onDragEnd = {
-                        when {
-                            offsetX > 150f -> {
-                                offsetX = 0f; onSwipeRight()
-                            }
-
-                            offsetX < -150f -> {
-                                offsetX = 0f; onSwipeLeft()
-                            }
-
-                            else -> offsetX = 0f
-                        }
-                    }
-                ) { _, dragAmount ->
-                    offsetX += dragAmount
-                }
-            }
     ) {
         Card(
             shape = RoundedCornerShape(24.dp),
-            modifier = Modifier.Companion
+            modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(0.72f)
                 .shadow(16.dp, androidx.compose.foundation.shape.RoundedCornerShape(24.dp)),
-            colors = CardDefaults.cardColors(containerColor = Color.Companion.Transparent)
+            colors = CardDefaults.cardColors(containerColor = Color.Transparent)
         ) {
-            Box(modifier = Modifier.Companion.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 // Cover image
                 AsyncImage(
                     model = book.coverUrl,
                     contentDescription = book.title,
-                    contentScale = ContentScale.Companion.Crop,
-                    modifier = Modifier.Companion.fillMaxSize()
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
 
                 // Gradient overlay at bottom
                 Box(
-                    modifier = Modifier.Companion
+                    modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.35f)
-                        .align(Alignment.Companion.BottomCenter)
+                        .align(Alignment.BottomCenter)
                         .background(
-                            Brush.Companion.verticalGradient(
-                                colors = listOf(Color.Companion.Transparent, Color(0xDD000000))
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color(0xDD000000))
                             )
                         )
                 )
 
                 // Title + author
                 Column(
-                    modifier = Modifier.Companion
-                        .align(Alignment.Companion.BottomStart)
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
                         .padding(20.dp)
                 ) {
                     Text(
                         text = book.title,
-                        color = Color.Companion.White,
-                        fontWeight = FontWeight.Companion.Bold,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
                         maxLines = 2,
-                        overflow = TextOverflow.Companion.Ellipsis
+                        overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(Modifier.Companion.height(2.dp))
+                    Spacer(Modifier.height(2.dp))
                     Text(
                         text = book.author,
-                        color = Color.Companion.White.copy(alpha = 0.8f),
+                        color = Color.White.copy(alpha = 0.8f),
                         fontSize = 14.sp
                     )
                 }

@@ -2,7 +2,6 @@ package com.kdbrian.sage.data.remote.impl
 
 // FirebaseDocumentRepo.kt
 import android.net.Uri
-import android.content.Context
 import androidx.paging.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,11 +9,14 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.kdbrian.sage.data.paging.FirestorePagingSource
 import com.kdbrian.sage.domain.model.DocumentModel
+import com.kdbrian.sage.domain.model.InAppActivity
 import com.kdbrian.sage.domain.model.toDocumentModel
 import com.kdbrian.sage.domain.model.toMap
+import com.kdbrian.sage.domain.repo.AppActivityService
 import com.kdbrian.sage.domain.repo.DocumentRepo
 import com.kdbrian.sage.domain.repo.UploadState
 import com.kdbrian.sage.util.Resource
+import com.kdbrian.sage.util.dispatchIo
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
@@ -24,11 +26,12 @@ private const val COLLECTION_DEFAULT = "documents_default"
 private const val COLLECTION_UPLOADED = "documents_uploaded"
 
 class FirebaseDocumentRepo(
-    private val context: Context,
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
     private val storage: FirebaseStorage = FirebaseStorage.getInstance(),
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val appActivityService: AppActivityService
 ) : DocumentRepo {
+
 
     // ─── Upload ───────────────────────────────────────────────────────────────
 
@@ -66,6 +69,16 @@ class FirebaseDocumentRepo(
                 .set(document.toMap())
                 .await()
 
+            dispatchIo {
+                appActivityService.logActivity(
+                    InAppActivity
+                        .Builder()
+                        .name("Save Document ${document.title.uppercase()}_${document.id}")
+                        .build()
+                )
+            }
+
+            trySend(Resource.Loading(1f))
             trySend(Resource.Success(document))
         } catch (e: Exception) {
             trySend(Resource.Error(e.message ?: "Upload failed"))
@@ -111,18 +124,48 @@ class FirebaseDocumentRepo(
                 .endAt("$query\uf8ff")
         }
 
+    override suspend fun toggleFavourite(documentModel: DocumentModel) =
+        dispatchIo {
+            val documentReference = firestore
+                .collection(COLLECTION_DEFAULT)
+                .document("${auth.currentUser?.uid}/favourites/${documentModel.id}")
+
+            val documentSnapshot = documentReference.get().await()
+            val exists = documentSnapshot.exists()
+            if (!exists) {
+                documentReference
+                    .set(documentModel.toMap())
+                    .await()
+            } else {
+                documentReference.delete()
+                    .await()
+            }
+
+            dispatchIo {
+                appActivityService.logActivity(
+                    InAppActivity
+                        .Builder()
+                        .name("Toggle Favourite Document ${documentModel.title.uppercase()}_${documentModel.id}")
+                        .build()
+                )
+            }
+
+            Result.success(exists.not())
+        }
+
     // ─── Simple Search ────────────────────────────────────────────────────────
 
     override suspend fun simplerSearch(query: String): Result<List<DocumentModel?>> =
         runCatching {
             val lower = query.lowercase()
-            val snapshot = firestore.collection(COLLECTION_DEFAULT)
-                .orderBy("title")
-                .startAt(lower)
-                .endAt("$lower\uf8ff")
-                .limit(50)
-                .get()
-                .await()
+            val snapshot =
+                firestore.collection(COLLECTION_DEFAULT)
+                    .orderBy("title")
+                    .startAt(lower)
+                    .endAt("$lower\uf8ff")
+                    .limit(50)
+                    .get()
+                    .await()
             snapshot.documents.map { it.toDocumentModel() }
         }
 

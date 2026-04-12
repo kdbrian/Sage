@@ -7,9 +7,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kdbrian.sage.presentation.ui.screens.HomeScreen
+import com.kdbrian.sage.presentation.viewmodel.MainViewModel
 
 @Composable
-fun MainNav() {
+fun MainNav(
+    mainViewModel: MainViewModel
+) {
 
     val navController = rememberNavController()
 

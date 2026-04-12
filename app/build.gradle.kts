@@ -128,12 +128,9 @@ dependencies {
     implementation(libs.accompanist.permissions)
 
     //room
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-
-    //realm
-    implementation(libs.library.base)
 
     //coil
     implementation(libs.coil.compose)
