@@ -60,6 +60,8 @@ services:
     build:
       context: ./processor
       network: host
+      args:
+        EMBEDDING_MODEL: ${EMBEDDING_MODEL}
 
     container_name: ${PDF_PROCESSOR_CONTAINER_NAME}
     restart: unless-stopped
