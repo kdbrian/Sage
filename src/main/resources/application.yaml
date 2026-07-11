@@ -1,0 +1,67 @@
+scalar:
+  enabled: true
+  actuatorEnabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: scalar
+
+spring:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  application:
+    name: drag
+
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/drag_db
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:6644}
+    database: ${POSTGRES_DB:drag_db}
+    driver-class-name: org.postgresql.Driver
+
+
+  graphql:
+    graphiql:
+      path: /graph
+      schema:
+        locations: classpath:graphql/
+      enabled: true
+    schema:
+      printer:
+        enabled: true        # Print SDL on startup
+    websocket:
+      path: /graphql-ws
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_DEFAULT_USER:admin1}
+    password: ${RABBITMQ_DEFAULT_PASS:LizTetEcrJik}
+    virtual-host: /
+
+
+gg:
+  jte:
+    developmentMode: true
+    templateSuffix: .kte
+
+files:
+  upload:
+    dir: ./uploads
+
+documents:
+  reconcile:
+    delay-ms: 14400000
+
+jwt:
+  secret: ${JWT_SECRET:change-this-dev-only-secret-key-please-override-in-prod}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+server:
+  port: 8990

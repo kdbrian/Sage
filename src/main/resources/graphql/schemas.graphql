@@ -1,0 +1,108 @@
+type User {
+    id: ID!
+    username: String
+    email: String
+    createdAt: Float
+}
+
+type Document{
+    id: ID!
+    title: String
+    categories: [DocumentCategory]
+    summary: String
+    source: String
+    authoringSource: String
+    status:DocumentStatus
+    aiSummary: String
+    uploadedBy: User
+    processingError: String
+    createdAt: Float,
+    updatedAt: Float,
+}
+
+input DocumentDto {
+    title: String
+    categories: [DocumentCategoryDto]
+    summary: String
+    source: String
+    authoringSource: String
+    aiSummary: String
+}
+
+
+type DocumentCategory{
+    categoryId: ID!
+    documents: [Document]
+    name: String
+    description: String
+    source: String
+    createdAt: Float
+    updatedAt: Float
+}
+
+input DocumentCategoryDto{
+    name: String
+    description: String
+    source: String
+}
+
+scalar Object
+input PageParameters {
+    page:Int
+    size:Int
+    sortOrders : Object
+}
+
+type DocumentPage {
+    page:Int
+    size:Int
+    currentPage:Int
+    content:[Document]
+}
+
+type DocumentCategoryPage {
+    page:Int
+    size:Int
+    currentPage:Int
+    content:[DocumentCategory]
+}
+enum DocumentStatus {UPLOADED PROCESSING PROCESSED FAILED}
+
+type Notification {
+    id: ID!
+    documentId: String
+    documentTitle: String
+    categoryId: String
+    categoryName: String
+    type: NotificationType
+    message: String
+    read: Boolean
+    createdAt: Float
+}
+
+enum NotificationType {UPLOADED PROCESSED FAILED}
+
+type Query {
+    allDocs(parameters:PageParameters!, mine: Boolean): DocumentPage
+    findByTitle(title: String, pageParameters: PageParameters!): DocumentPage
+    findBySource(source: String, pageParameters: PageParameters!): DocumentPage
+    findByCategory(categoryId: ID!, pageParameters: PageParameters!): DocumentPage
+    findById(id: ID!): Document
+    findRecentlyUpdated(timestamp:Float, pageParameters: PageParameters!): Document
+    categories(parameters:PageParameters!) : DocumentCategoryPage
+
+}
+
+type Mutation {
+    createDocument(document:DocumentDto!) : Document
+    createCategory(dto:DocumentDto!) : DocumentCategory
+    addCategoriesToDocument(categories: [ID!],documentId: String): Document
+
+    updateCategory(id:ID!, dto:DocumentCategoryDto!): DocumentCategory
+    categoryById(id:ID!): DocumentCategory
+
+}
+
+type Subscription {
+    notifications: Notification
+}

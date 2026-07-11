@@ -1,0 +1,127 @@
+services:
+
+  postgres:
+    image: pgvector/pgvector:0.8.3-pg18-trixie
+    container_name: ${POSTGRES_CONTAINER_NAME}
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    ports:
+      - "${POSTGRES_PORT}:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ${PGADMIN_CONTAINER_NAME}
+    restart: unless-stopped
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+
+    ports:
+      - "${PGADMIN_PORT}:80"
+
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+    depends_on:
+      - postgres
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: ${RABBIT_CONTAINER_NAME}
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:?RABBITMQ_DEFAULT_USER is required}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:?RABBITMQ_DEFAULT_PASS is required}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Shares the same Postgres instance/database as spring-app (see DATABASE_URL)
+  # and the uploads volume, so chunks it writes stay tied to the Document rows
+  # spring-app owns. Talks to spring-app exclusively over RabbitMQ.
+  pdf-processor:
+    build:
+      context: ./processor
+      network: host
+
+    container_name: ${PDF_PROCESSOR_CONTAINER_NAME}
+    restart: unless-stopped
+
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL}
+      FILE_UPLOAD_DIR: /data/uploads
+      RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672/%2F
+
+    volumes:
+      - ./uploads:/data/uploads
+
+    depends_on:
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
+
+  spring-app:
+    build:
+      context: .
+      network: host
+    container_name: ${SPRING_CONTAINER_NAME}
+    restart: unless-stopped
+
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      FILE_UPLOAD_DIR: ${FILE_UPLOAD_DIR}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:?RABBITMQ_DEFAULT_USER is required}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:?RABBITMQ_DEFAULT_PASS is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+    volumes:
+      - ./uploads:/data/uploads
+
+    # No published host port: the gateway is the only public entrypoint.
+    depends_on:
+      - postgres
+
+  # Single public entrypoint for all clients; routes everything to spring-app.
+  gateway:
+    build:
+      context: ./gateway
+      network: host
+    container_name: ${GATEWAY_CONTAINER_NAME}
+    restart: unless-stopped
+
+    environment:
+      BACKEND_URI: http://spring-app:8990
+
+    ports:
+      - "${GATEWAY_PORT}:8080"
+
+    depends_on:
+      - spring-app
+
+volumes:
+  pgadmin_data:
+  postgres_data:
+  rabbitmq-data:

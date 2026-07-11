@@ -1,0 +1,553 @@
+@import org.springframework.data.domain.Page
+@import kdbrian.github.io.drag.domain.model.Document
+@import java.time.Instant
+@import java.time.ZoneId
+@import java.time.format.DateTimeFormatter
+
+@param title: String
+@param pages: Page<Document>
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home | ${title}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet">
+    <style type="text/tailwindcss">
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-display {
+            font-family: 'Fraunces', serif;
+        }
+
+        .doc-card + .doc-card {
+            border-top: 1px dashed #b08d57aa;
+        }
+
+        dialog::backdrop {
+            background: rgba(27, 36, 48, 0.55);
+        }
+
+        dialog[open] {
+            animation: dialog-in .18s ease-out;
+        }
+
+        @keyframes dialog-in {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dial-btn {
+            transition: opacity .15s ease, transform .15s ease;
+        }
+
+        .dial-hidden {
+            opacity: 0;
+            transform: translateY(8px) scale(.9);
+            pointer-events: none;
+        }
+
+        .chevron {
+            transition: transform .15s ease;
+        }
+
+        .chevron.rotated {
+            transform: rotate(-90deg);
+        }
+
+        #progress-bar {
+            transition: width .15s ease;
+        }
+    </style>
+</head>
+<body class="bg-[#f6f2ea] text-[#1b2430]">
+
+<div class="min-h-screen flex flex-col lg:flex-row">
+
+    <div class="lg:w-3/5 bg-[#1b2430] text-[#f6f2ea] flex flex-col justify-center px-10 py-16 lg:px-20">
+        <p class="uppercase tracking-[0.3em] text-xs text-[#b08d57] mb-4">Document Archive</p>
+        <h1 class="font-display font-semibold text-6xl lg:text-7xl leading-[1.05]">
+            Welcome to<br>${title}
+        </h1>
+        <p class="mt-6 max-w-md text-[#c7cdd4] text-base leading-relaxed">
+            Every file you upload lands here, catalogued and searchable, so nothing
+            gets lost in a folder you'll forget the name of.
+        </p>
+    </div>
+
+    <div class="lg:w-2/5 bg-[#f6f2ea] px-8 py-12 lg:px-12 flex flex-col gap-6">
+
+        <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <button id="doc-toggle" onclick="toggleSection('doc-wrapper','doc-toggle')"
+                        class="flex items-center gap-2 font-display text-2xl font-semibold text-[#1b2430]">
+                    <svg class="chevron w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                    Recently added
+                </button>
+                <select onchange="changePageSize(this.value)"
+                        class="text-xs border border-[#e5ddce] rounded-md bg-white px-2 py-1 text-[#5c6773]">
+
+                    @for(n in listOf(5, 10, 15, 20, 25, 30, 35, 40, 45, 50))
+                        <option value="${n}" selected="${pages.size == n}">${n} / page</option>
+                    @endfor
+                </select>
+            </div>
+
+            <div id="doc-wrapper">
+                @if(pages.content.isEmpty())
+                    <div class="border border-dashed border-[#b08d57] rounded-lg p-8 text-center text-[#5c6773]">
+                        <p class="font-medium text-[#1b2430]">No documents yet</p>
+                        <p class="text-sm mt-1">Uploaded files will show up here as soon as they land.</p>
+                    </div>
+                @endif
+
+                @if(!pages.content.isEmpty())
+                    <ul class="bg-white rounded-lg shadow-sm border border-[#e5ddce] max-h-[22rem] overflow-y-auto">
+                        @for(document in pages.content)
+                            <li class="doc-card px-5 py-4 hover:bg-[#faf7f1] transition-colors">
+                                <a href="${document.source}" class="block group">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <h4 class="font-medium text-[#1b2430] group-hover:text-[#b08d57] transition-colors">
+                                            ${document.title}
+                                        </h4>
+                                        @if(document.status != null)
+                                            <span class="shrink-0 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#1b2430] text-[#f6f2ea]">
+                                                ${document.status}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    @if(!document.summary.isEmpty())
+                                        <p class="text-sm text-[#5c6773] mt-1 line-clamp-2">${document.summary}</p>
+                                    @endif
+                                    <p class="text-xs text-[#9aa2ab] mt-2">
+                                        ${DateTimeFormatter.ofPattern("MMM d, yyyy").format(Instant.ofEpochMilli(document.createdAt).atZone(ZoneId.systemDefault()))}
+                                    </p>
+                                </a>
+                            </li>
+                        @endfor
+                    </ul>
+                @endif
+
+                <div class="flex items-center justify-between mt-3 text-sm text-[#5c6773]">
+                    <a href="${if (pages.hasPrevious()) "?page=" + (pages.number - 1) + "&size=" + pages.size else "#"}"
+                       class="${if (pages.hasPrevious()) "text-[#1b2430] hover:text-[#b08d57]" else "text-[#c2c8cd] pointer-events-none"}">
+                        &larr; Prev
+                    </a>
+                    <span>Page ${pages.number + 1} of ${if (pages.totalPages == 0) 1 else pages.totalPages}</span>
+                    <a href="${if (pages.hasNext()) "?page=" + (pages.number + 1) + "&size=" + pages.size else "#"}"
+                       class="${if (pages.hasNext()) "text-[#1b2430] hover:text-[#b08d57]" else "text-[#c2c8cd] pointer-events-none"}">
+                        Next &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="chat-section" class="flex flex-col">
+            <button id="chat-toggle" onclick="toggleSection('chat-wrapper','chat-toggle')"
+                    class="flex items-center gap-2 font-display text-xl font-semibold text-[#1b2430] mb-4">
+                <svg class="chevron rotated w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+                Ask about your documents
+            </button>
+            <div id="chat-wrapper"
+                 class="hidden bg-white rounded-lg shadow-sm border border-[#e5ddce] flex flex-col h-72">
+                <div class="flex-1 overflow-y-auto px-5 py-4 text-sm text-[#5c6773]">
+                    <p>This is just the shell for now &mdash; nothing is wired up yet.</p>
+                </div>
+                <form class="border-t border-[#e5ddce] px-4 py-3 flex gap-2" onsubmit="return false;">
+                    <input type="text" placeholder="Type a message..."
+                           class="flex-1 border border-[#e5ddce] rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#b08d57]"
+                           disabled>
+                    <button type="submit"
+                            class="bg-[#b08d57] text-white rounded-full px-4 py-2 text-sm opacity-60 cursor-not-allowed"
+                            disabled>
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 flex flex-col items-center gap-3">
+    <button id="dial-upload" onclick="openUpload()"
+            class="dial-btn dial-hidden w-12 h-12 rounded-full bg-white text-[#1b2430] shadow-lg border border-[#e5ddce] flex items-center justify-center hover:bg-[#faf7f1]"
+            aria-label="Upload document">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+             stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L7 9m5-5l5 5M5 20h14"/>
+        </svg>
+    </button>
+    <button id="dial-chat" onclick="openChat()"
+            class="dial-btn dial-hidden w-12 h-12 rounded-full bg-white text-[#1b2430] shadow-lg border border-[#e5ddce] flex items-center justify-center hover:bg-[#faf7f1]"
+            aria-label="Open chat">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+             stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.077-.164-3.02-.465L3 21l1.395-3.72C3.512 15.89 3 14.5 3 13c0-4.418 4.03-8 9-8s9 3.582 9 7z"/>
+        </svg>
+    </button>
+    <button id="dial-main" onclick="toggleDial()"
+            class="w-14 h-14 rounded-full bg-[#b08d57] text-white shadow-lg hover:bg-[#9a7a49] transition-transform flex items-center justify-center"
+            aria-label="Open actions">
+        <svg id="dial-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+    </button>
+</div>
+
+<dialog id="upload-dialog" class="rounded-xl p-0 w-full max-w-lg backdrop:backdrop-blur-sm">
+    <form id="upload-form" class="flex flex-col max-h-[85vh]">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-[#e5ddce] bg-[#1b2430] text-white rounded-t-xl">
+            <h3 class="font-display text-lg font-semibold">Upload a document</h3>
+            <button type="button" onclick="closeUpload()" class="text-[#c7cdd4] hover:text-white" aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="px-5 py-4 overflow-y-auto flex flex-col gap-4">
+
+            <div class="flex gap-2 text-sm">
+                <button type="button" id="mode-file-btn" onclick="setMode('file')"
+                        class="flex-1 py-2 rounded-md border border-[#b08d57] bg-[#b08d57] text-white">
+                    Choose file
+                </button>
+                <button type="button" id="mode-url-btn" onclick="setMode('url')"
+                        class="flex-1 py-2 rounded-md border border-[#e5ddce] text-[#5c6773]">
+                    From a link
+                </button>
+            </div>
+
+            <div id="mode-file-panel">
+                <label class="block text-xs font-medium text-[#5c6773] mb-1">File</label>
+                <input type="file" id="file-input"
+                       accept=".pdf,.doc,.docx,.odt,.rtf,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                       class="block w-full text-sm border border-[#e5ddce] rounded-md px-3 py-2 bg-white">
+                <p class="text-xs text-[#9aa2ab] mt-1">PDF or Word documents only &mdash; .pdf, .doc, .docx, .odt, .rtf,
+                    .txt</p>
+            </div>
+
+            <div id="mode-url-panel" class="hidden">
+                <label class="block text-xs font-medium text-[#5c6773] mb-1">File link</label>
+                <div class="flex gap-2">
+                    <input type="url" id="url-input" placeholder="https://example.com/report.pdf"
+                           class="flex-1 border border-[#e5ddce] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#b08d57]">
+                    <button type="button" id="fetch-btn" onclick="fetchFromUrl()"
+                            class="px-4 py-2 rounded-md bg-[#1b2430] text-white text-sm hover:bg-[#2a3648]">
+                        Fetch
+                    </button>
+                </div>
+                <p class="text-xs text-[#9aa2ab] mt-1">The link must allow direct downloads (no login walls).</p>
+            </div>
+
+            <div id="file-preview"
+                 class="hidden items-center gap-2 text-sm bg-[#faf7f1] border border-[#e5ddce] rounded-md px-3 py-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#b08d57] shrink-0" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span id="file-preview-name" class="truncate"></span>
+                <span id="file-preview-size" class="text-[#9aa2ab] shrink-0"></span>
+            </div>
+
+            <hr class="border-[#e5ddce]">
+
+            <div>
+                <label class="block text-xs font-medium text-[#5c6773] mb-1">Title</label>
+                <input type="text" id="title-input" required placeholder="Q2 board report"
+                       class="w-full border border-[#e5ddce] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#b08d57]">
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-[#5c6773] mb-1">Summary</label>
+                <textarea id="summary-input" rows="3" placeholder="What's this document about?"
+                          class="w-full border border-[#e5ddce] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#b08d57]"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-[#5c6773] mb-1">Source / origin</label>
+                <input type="text" id="source-input" placeholder="Author, publisher, or where it came from"
+                       class="w-full border border-[#e5ddce] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#b08d57]">
+            </div>
+
+            <div id="upload-error"
+                 class="hidden text-sm text-[#a32d2d] bg-[#fcebeb] border border-[#f0c1c1] rounded-md px-3 py-2"></div>
+
+            <div id="upload-progress" class="hidden flex flex-col gap-1">
+                <div class="w-full h-2 rounded-full bg-[#e5ddce] overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-[#b08d57]" style="width:0%"></div>
+                </div>
+                <span id="progress-text" class="text-xs text-[#5c6773]">Uploading&hellip; 0%</span>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-2 px-5 py-4 border-t border-[#e5ddce]">
+            <button type="button" onclick="closeUpload()"
+                    class="px-4 py-2 rounded-md text-sm text-[#5c6773] hover:bg-[#faf7f1]">
+                Cancel
+            </button>
+            <button type="submit" id="submit-btn"
+                    class="px-4 py-2 rounded-md text-sm bg-[#b08d57] text-white hover:bg-[#9a7a49]">
+                Upload document
+            </button>
+        </div>
+    </form>
+</dialog>
+
+<script>
+    const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'odt', 'rtf', 'txt'];
+    let pendingFile = null;
+    let mode = 'file';
+    let dialOpen = false;
+
+    function extOf(name) {
+        return name.split('.').pop().toLowerCase();
+    }
+
+    function formatSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('upload-error');
+        el.textContent = msg;
+        el.classList.remove('hidden');
+    }
+
+    function clearError() {
+        document.getElementById('upload-error').classList.add('hidden');
+    }
+
+    function setPreview(file) {
+        pendingFile = file;
+        document.getElementById('file-preview').classList.remove('hidden');
+        document.getElementById('file-preview').classList.add('flex');
+        document.getElementById('file-preview-name').textContent = file.name;
+        document.getElementById('file-preview-size').textContent = formatSize(file.size);
+    }
+
+    function clearPreview() {
+        pendingFile = null;
+        document.getElementById('file-preview').classList.add('hidden');
+        document.getElementById('file-preview').classList.remove('flex');
+    }
+
+    function setMode(next) {
+        mode = next;
+        clearError();
+        clearPreview();
+        const fileBtn = document.getElementById('mode-file-btn');
+        const urlBtn = document.getElementById('mode-url-btn');
+        const filePanel = document.getElementById('mode-file-panel');
+        const urlPanel = document.getElementById('mode-url-panel');
+        if (next === 'file') {
+            filePanel.classList.remove('hidden');
+            urlPanel.classList.add('hidden');
+            fileBtn.className = 'flex-1 py-2 rounded-md border border-[#b08d57] bg-[#b08d57] text-white';
+            urlBtn.className = 'flex-1 py-2 rounded-md border border-[#e5ddce] text-[#5c6773]';
+        } else {
+            filePanel.classList.add('hidden');
+            urlPanel.classList.remove('hidden');
+            urlBtn.className = 'flex-1 py-2 rounded-md border border-[#b08d57] bg-[#b08d57] text-white';
+            fileBtn.className = 'flex-1 py-2 rounded-md border border-[#e5ddce] text-[#5c6773]';
+        }
+    }
+
+    document.getElementById('file-input').addEventListener('change', (e) => {
+        clearError();
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!ALLOWED_EXT.includes(extOf(file.name))) {
+            showError('That file type isn\'t supported. Use PDF or Word documents only.');
+            e.target.value = '';
+            clearPreview();
+            return;
+        }
+        setPreview(file);
+    });
+
+    async function fetchFromUrl() {
+        const urlInput = document.getElementById('url-input');
+        const url = urlInput.value.trim();
+        clearError();
+        if (!url) {
+            showError('Enter a link to fetch.');
+            return;
+        }
+        const fetchBtn = document.getElementById('fetch-btn');
+        fetchBtn.disabled = true;
+        fetchBtn.textContent = 'Fetching...';
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('bad response');
+            const blob = await res.blob();
+            let filename = url.split('/').pop().split('?')[0] || 'document';
+            if (!filename.includes('.')) filename += '.pdf';
+            if (!ALLOWED_EXT.includes(extOf(filename))) {
+                throw new Error('bad type');
+            }
+            const file = new File([blob], filename, {type: blob.type});
+            setPreview(file);
+            const sourceInput = document.getElementById('source-input');
+            if (!sourceInput.value) sourceInput.value = url;
+        } catch (err) {
+            showError('Couldn\'t fetch that file. Check the link, and make sure it points directly to a PDF or Word document.');
+        } finally {
+            fetchBtn.disabled = false;
+            fetchBtn.textContent = 'Fetch';
+        }
+    }
+
+    function resetUploadForm() {
+        document.getElementById('upload-form').reset();
+        clearPreview();
+        clearError();
+        document.getElementById('upload-progress').classList.add('hidden');
+        document.getElementById('progress-bar').style.width = '0%';
+        document.getElementById('progress-text').textContent = 'Uploading... 0%';
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('submit-btn').textContent = 'Upload document';
+        setMode('file');
+    }
+
+    function openUpload() {
+        resetUploadForm();
+        document.getElementById('upload-dialog').showModal();
+        closeDial();
+    }
+
+    function closeUpload() {
+        document.getElementById('upload-dialog').close();
+    }
+
+    document.getElementById('upload-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearError();
+
+        const title = document.getElementById('title-input').value.trim();
+        const summary = document.getElementById('summary-input').value.trim();
+        const source = document.getElementById('source-input').value.trim();
+
+        if (!pendingFile) {
+            showError('Choose a file or fetch one from a link first.');
+            return;
+        }
+        if (!title) {
+            showError('Give the document a title.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('multipartFile', pendingFile, pendingFile.name);
+        formData.append('title', title);
+        formData.append('summary', summary);
+        formData.append('source', source);
+
+        const submitBtn = document.getElementById('submit-btn');
+        const progressWrap = document.getElementById('upload-progress');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Uploading...';
+        progressWrap.classList.remove('hidden');
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/documents/upload');
+
+        xhr.upload.onprogress = (e) => {
+            if (!e.lengthComputable) return;
+            const pct = Math.round((e.loaded / e.total) * 100);
+            progressBar.style.width = pct + '%';
+            progressText.textContent = 'Uploading... ' + pct + '%';
+        };
+
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                progressText.textContent = 'Done. Refreshing...';
+                setTimeout(() => window.location.reload(), 600);
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Upload document';
+                showError('Upload failed (status ' + xhr.status + '). Try again.');
+            }
+        };
+
+        xhr.onerror = () => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Upload document';
+            showError('Network error while uploading. Try again.');
+        };
+
+        xhr.send(formData);
+    });
+
+    function toggleSection(wrapperId, btnId) {
+        const wrapper = document.getElementById(wrapperId);
+        const chevron = document.querySelector('#' + btnId + ' .chevron');
+        wrapper.classList.toggle('hidden');
+        chevron.classList.toggle('rotated');
+    }
+
+    function openChat() {
+        const wrapper = document.getElementById('chat-wrapper');
+        wrapper.classList.remove('hidden');
+        document.querySelector('#chat-toggle .chevron').classList.remove('rotated');
+        document.getElementById('chat-section').scrollIntoView({behavior: 'smooth', block: 'center'});
+        closeDial();
+    }
+
+    function toggleDial() {
+        dialOpen = !dialOpen;
+        const uploadBtn = document.getElementById('dial-upload');
+        const chatBtn = document.getElementById('dial-chat');
+        const icon = document.getElementById('dial-icon');
+        uploadBtn.classList.toggle('dial-hidden', !dialOpen);
+        chatBtn.classList.toggle('dial-hidden', !dialOpen);
+        icon.style.transform = dialOpen ? 'rotate(45deg)' : 'rotate(0deg)';
+    }
+
+    function closeDial() {
+        dialOpen = false;
+        document.getElementById('dial-upload').classList.add('dial-hidden');
+        document.getElementById('dial-chat').classList.add('dial-hidden');
+        document.getElementById('dial-icon').style.transform = 'rotate(0deg)';
+    }
+
+    function changePageSize(size) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('size', size);
+        url.searchParams.set('page', '0');
+        window.location.href = url.toString();
+    }
+</script>
+
+</body>
+</html>

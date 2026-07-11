@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: drag-backend
+              uri: ${BACKEND_URI:http://spring-app:8990}
+              predicates:
+                - Path=/**
+              filters:
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,PATCH,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,gateway
