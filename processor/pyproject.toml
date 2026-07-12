@@ -9,6 +9,9 @@ dependencies = [
     "sentence-transformers>=3.2",
     "psycopg[binary]>=3.2",
     "pgvector>=0.3.6",
+    "transformers>=4.44,<5",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
 ]
 
 [build-system]

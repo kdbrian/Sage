@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface DocumentCategoryRepository : JpaRepository<DocumentCategory, String> {
     fun findByNameContainingIgnoreCase(name: String, pageable: Pageable = defaultPageable): Page<DocumentCategory>
+    fun findByNameIgnoreCase(name: String): DocumentCategory?
 }

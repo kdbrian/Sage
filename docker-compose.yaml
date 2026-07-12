@@ -62,6 +62,7 @@ services:
       network: host
       args:
         EMBEDDING_MODEL: ${EMBEDDING_MODEL}
+        SUMMARIZATION_MODEL: ${SUMMARIZATION_MODEL}
 
     container_name: ${PDF_PROCESSOR_CONTAINER_NAME}
     restart: unless-stopped
@@ -69,8 +70,10 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
       EMBEDDING_MODEL: ${EMBEDDING_MODEL}
+      SUMMARIZATION_MODEL: ${SUMMARIZATION_MODEL}
       FILE_UPLOAD_DIR: /data/uploads
       RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672/%2F
+      HTTP_PORT: 8000
 
     volumes:
       - ./uploads:/data/uploads
@@ -108,12 +111,16 @@ services:
       WEBAUTHN_RP_ID: ${WEBAUTHN_RP_ID:-localhost}
       WEBAUTHN_RP_NAME: ${WEBAUTHN_RP_NAME:-Drag}
       WEBAUTHN_ORIGINS: ${WEBAUTHN_ORIGINS:-http://localhost:8080}
+      # Internal-only (see pdf-processor's HTTP_PORT); used by the chat query
+      # pipeline to embed a query with the same model used on stored chunks.
+      PROCESSOR_URL: http://pdf-processor:8000
     volumes:
       - ./uploads:/data/uploads
 
     # No published host port: the gateway is the only public entrypoint.
     depends_on:
       - postgres
+      - pdf-processor
 
   # Single public entrypoint for all clients; routes everything to spring-app.
   gateway:

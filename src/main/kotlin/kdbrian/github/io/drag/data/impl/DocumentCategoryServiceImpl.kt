@@ -34,6 +34,21 @@ class DocumentCategoryServiceImpl(
         )
     }
 
+    override fun findOrCreateByName(name: String): DocumentCategory {
+        documentCategoryRepository.findByNameIgnoreCase(name)?.let { return it }
+        return documentCategoryRepository.save(
+            DocumentCategory(
+                name = name,
+                // DocumentCategory.description has a 130-char minimum; auto-derived
+                // topics don't have a human-written one, so pad a generic sentence
+                // out to satisfy it rather than relaxing the constraint for everyone.
+                description = "Documents automatically grouped under the topic '$name', " +
+                    "identified from AI-generated summaries during PDF processing. " +
+                    "This category was created automatically and can be edited or merged later.",
+            )
+        )
+    }
+
     override fun categoryById(id: String): DocumentCategory {
         return documentCategoryRepository.findById(id)
             .orElseThrow {

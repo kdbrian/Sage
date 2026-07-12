@@ -60,6 +60,18 @@ documents:
   reconcile:
     delay-ms: 14400000
 
+processor:
+  # Internal-only: the Python processor's /embed endpoint, reachable on the
+  # Docker network, never published to the host or routed through the gateway.
+  url: ${PROCESSOR_URL:http://pdf-processor:8000}
+
+chat:
+  # pgvector cosine distance (0 = identical, 2 = opposite) a chunk must clear
+  # to be considered relevant. Below this, a query is treated as out of
+  # context for the current document set (see ChatService).
+  similarity-threshold: ${CHAT_SIMILARITY_THRESHOLD:0.6}
+  result-limit: ${CHAT_RESULT_LIMIT:5}
+
 jwt:
   secret: ${JWT_SECRET:change-this-dev-only-secret-key-please-override-in-prod}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}

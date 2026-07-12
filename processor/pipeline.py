@@ -1,9 +1,27 @@
 import re
+from collections import Counter
 from typing import List
 from pypdf import PdfReader
 from sentence_transformers import SentenceTransformer
+from transformers import pipeline
 import psycopg
+from pgvector import Vector
 from pgvector.psycopg import register_vector
+
+# Small hardcoded stopword list -- topic extraction only needs to filter out
+# noise words, not full linguistic accuracy, so no extra NLP dependency.
+_STOPWORDS = {
+    "the", "and", "for", "are", "but", "not", "you", "all", "any", "can",
+    "had", "her", "was", "one", "our", "out", "day", "get", "has", "him",
+    "his", "how", "man", "new", "now", "old", "see", "two", "way", "who",
+    "boy", "did", "its", "let", "put", "say", "she", "too", "use", "with",
+    "this", "that", "from", "have", "will", "your", "they", "been", "were",
+    "into", "than", "them", "then", "these", "those", "which", "about",
+    "would", "there", "their", "what", "when", "where", "while", "such",
+    "also", "some", "each", "more", "most", "other", "over", "after",
+    "being", "both", "could", "should", "does", "doing", "during",
+    "further", "here", "itself", "just", "only", "same", "very", "within",
+}
 
 
 # 1. PREPROCESSING CLASS
@@ -56,6 +74,48 @@ class EmbeddingEngine:
             return []
         embeddings = self.model.encode(texts, convert_to_numpy=True)
         return embeddings.tolist()
+
+    def embed_query(self, text: str) -> List[float]:
+        """Embeds a single piece of text (a chat query) into the same vector space."""
+        return self.model.encode([text], convert_to_numpy=True)[0].tolist()
+
+
+# 2b. SUMMARIZATION CLASS
+# Runs during processing only (not on the query path) -- one summarization per
+# uploaded document, not per chat request.
+
+class Summarizer:
+    # Input text is truncated before summarizing: distilbart's encoder has a
+    # 1024-token limit, and a single-pass summary over the opening of a
+    # document is a reasonable tradeoff against full map-reduce summarization
+    # for documents that exceed it.
+    MAX_INPUT_CHARS = 4000
+
+    def __init__(self, model_name: str = None):
+        self.model_name = model_name or "sshleifer/distilbart-cnn-12-6"
+        self.pipeline = pipeline("summarization", model=self.model_name)
+
+    def summarize(self, text: str) -> str:
+        """Produces a short abstractive summary of the document's opening text."""
+        truncated = text[: self.MAX_INPUT_CHARS].strip()
+        if len(truncated) < 200:
+            # Too little material for the summarizer to do anything useful with.
+            return truncated
+        result = self.pipeline(truncated, max_length=120, min_length=30, do_sample=False)
+        return result[0]["summary_text"].strip()
+
+
+def extract_topics(summary: str, max_topics: int = 3) -> List[str]:
+    """Derives short topic labels from a summary via word frequency, filtering
+    stopwords and short/non-alphabetic tokens. Deliberately simple (no extra
+    NLP model) since these are meant as coarse document categories, not
+    precision keyword extraction."""
+    words = re.findall(r"[A-Za-z][A-Za-z\-]{3,}", summary.lower())
+    significant = [w for w in words if w not in _STOPWORDS]
+    if not significant:
+        return []
+    counts = Counter(significant)
+    return [word.title() for word, _ in counts.most_common(max_topics)]
 
 
 # 3. VECTOR STORAGE CLASS (PGVECTOR)
@@ -110,5 +170,10 @@ class VectorStore:
                     "COPY pdf_document_chunks (document_id, chunk_index, chunk_content, embedding) FROM STDIN"
                 ) as copy:
                     for index, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
-                        copy.write_row((document_id, index, chunk, embedding))
+                        # COPY resolves each value's serializer by its Python type,
+                        # not by the target column's type -- a plain list gets
+                        # psycopg's generic array dumper ("{...}"), not pgvector's
+                        # bracket format ("[...]"), even with register_vector() on
+                        # the connection. Wrapping in Vector forces the right one.
+                        copy.write_row((document_id, index, chunk, Vector(embedding)))
                 conn.commit()
