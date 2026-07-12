@@ -93,12 +93,21 @@ services:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      FILE_UPLOAD_DIR: ${FILE_UPLOAD_DIR}
+      # Must match this service's own volume mount target below, not the
+      # container's working directory (files.upload.dir defaults to a path
+      # relative to the app, which isn't where the uploads volume is mounted).
+      FILE_UPLOAD_DIR: /data/uploads
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:?RABBITMQ_DEFAULT_USER is required}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:?RABBITMQ_DEFAULT_PASS is required}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      GRAPHQL_API_KEY: ${GRAPHQL_API_KEY:?GRAPHQL_API_KEY is required}
+      # rp-id/origins are baked into every passkey at creation time -- must
+      # be the real domain clients use before anyone registers one for real.
+      WEBAUTHN_RP_ID: ${WEBAUTHN_RP_ID:-localhost}
+      WEBAUTHN_RP_NAME: ${WEBAUTHN_RP_NAME:-Drag}
+      WEBAUTHN_ORIGINS: ${WEBAUTHN_ORIGINS:-http://localhost:8080}
     volumes:
       - ./uploads:/data/uploads
 

@@ -73,9 +73,52 @@ Send the token on every other request:
 Authorization: Bearer <token>
 ```
 
-Tokens expire after `jwt.expiration-ms` (default 24h). `/api/auth/**`, the
-GraphQL endpoint/playground, actuator, and API docs are the only routes that
-don't require a token.
+Tokens expire after `jwt.expiration-ms` (default 24h). `/api/auth/register`,
+`/api/auth/login`, `/api/auth/passkey/authenticate/**`, the GraphiQL shell
+(`/graph`), the GraphQL websocket handshake (`/graphql-ws`), actuator, and API
+docs are the only routes that don't require a token.
+
+### Passkeys (WebAuthn), alongside password login
+
+Additive, not a replacement — an account always has a password and can
+optionally also register one or more passkeys. Registering one requires
+already being signed in (you're attaching a credential to your account);
+authenticating with one is necessarily anonymous, since that's how you get
+signed in.
+
+```
+# already logged in (Authorization: Bearer <token>):
+POST /api/auth/passkey/register/options         → { "publicKey": { ...creation options... } }
+# client calls navigator.credentials.create({ publicKey }) (or the platform
+# equivalent on mobile), then POSTs the raw result:
+POST /api/auth/passkey/register/finish           body: credential.toJSON() verbatim
+
+# anonymous:
+POST /api/auth/passkey/authenticate/options       { "usernameOrEmail": "alice" }  (optional — omit for a
+                                                     resident/discoverable-credential prompt with no username)
+→ { "publicKey": { ...request options... } }
+# client calls navigator.credentials.get({ publicKey }), then POSTs the raw result:
+POST /api/auth/passkey/authenticate/finish        body: credential.toJSON() verbatim
+→ { "token": "...", "userId": "...", "username": "alice" }
+```
+
+The two "finish" endpoints take the authenticator's response exactly as the
+client serializes it — don't wrap it in another JSON envelope.
+
+`webauthn.rp-id` / `webauthn.origins` (env: `WEBAUTHN_RP_ID`,
+`WEBAUTHN_ORIGINS`) default to `localhost` / `http://localhost:8080` for local
+dev. **A passkey is bound to the `rp-id` it was created under** — set these to
+your real domain before anyone registers a passkey against a deployment, or
+every credential registered under the dev default becomes unusable once you
+change it.
+
+### Rate limits
+
+Per authenticated user, in-memory token buckets: 120 requests/minute overall,
+10 uploads/hour on `POST /api/documents/upload` specifically. Exceeding either
+gets a `429` with `{"error": "Too many requests, slow down."}`. Anonymous
+requests (registration, login, passkey authentication) aren't limited by this
+— only calls carrying a valid token are.
 
 ## REST endpoints
 
@@ -107,6 +150,16 @@ Endpoint: `POST /graphql`. Interactive explorer: `/graph`. Schema lives at
 `src/main/resources/graphql/schemas.graphql` — `Document`, `DocumentCategory`
 (topics), `User`, `Notification` types, full `Query`/`Mutation`, and one
 `Subscription`.
+
+`/graph` itself loads for anyone, but it fetches the schema by running a real
+introspection query against `/graphql`, which requires auth like everything
+else there. Two ways to unlock that without a full login:
+
+- Paste a real bearer token into GraphiQL's Headers panel (full access), or
+- Paste `X-Api-Key: <graphql.api-key>` (env: `GRAPHQL_API_KEY`) instead —
+  unlocks schema browsing only. Any operation that isn't pure introspection
+  (`__schema`/`__type`) is rejected for API-key-only requests, so the key
+  can't be used to read or write real data, only to see the schema shape.
 
 ```graphql
 query {

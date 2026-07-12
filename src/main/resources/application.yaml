@@ -29,10 +29,10 @@ spring:
   graphql:
     graphiql:
       path: /graph
-      schema:
-        locations: classpath:graphql/
       enabled: true
     schema:
+      locations: classpath:graphql/
+      file-extensions: .graphql,.graphqls,.gqls
       printer:
         enabled: true        # Print SDL on startup
     websocket:
@@ -53,7 +53,7 @@ gg:
 
 files:
   upload:
-    dir: ./uploads
+    dir: ${FILE_UPLOAD_DIR:./uploads}
 
 documents:
   reconcile:
@@ -63,5 +63,24 @@ jwt:
   secret: ${JWT_SECRET:change-this-dev-only-secret-key-please-override-in-prod}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
+graphql:
+  # Unlocks /graphql for schema introspection only (see ApiKeyIntrospectionInterceptor) so
+  # GraphiQL's docs panel works without a user login. Not a substitute for real auth.
+  api-key: ${GRAPHQL_API_KEY:change-this-dev-only-graphql-explorer-key}
+
+webauthn:
+  # rp-id MUST be the effective domain clients connect to (no scheme/port) --
+  # it's baked into every credential at creation time, so changing it later
+  # invalidates every passkey already registered. "localhost" only works for
+  # browsers/emulators hitting localhost directly; set the real domain (and
+  # matching origins) before deploying anywhere clients actually reach.
+  rp-id: ${WEBAUTHN_RP_ID:localhost}
+  rp-name: ${WEBAUTHN_RP_NAME:Drag}
+  origins: ${WEBAUTHN_ORIGINS:http://localhost:8080}
+
 server:
   port: 8990
+  # Trust X-Forwarded-* from the gateway so redirect/absolute URLs (e.g. the
+  # GraphiQL redirect at /graph) use the gateway's public address instead of
+  # this container's internal hostname.
+  forward-headers-strategy: framework
