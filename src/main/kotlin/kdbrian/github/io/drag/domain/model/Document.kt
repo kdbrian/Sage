@@ -22,14 +22,17 @@ class Document(
         inverseJoinColumns = [JoinColumn(name = "category_id")],
     )
     var categories: MutableSet<DocumentCategory> = mutableSetOf(),
+    @Column(columnDefinition = "TEXT")
     var summary: String = "",
     var source: String = "",
     var authoringSource: String = "",
     var status : DocumentStatus? = null,
+    @Column(columnDefinition = "TEXT")
     var aiSummary: String = "",
     @ManyToOne
     @JoinColumn(name = "uploaded_by")
     var uploadedBy: User? = null,
+    @Column(columnDefinition = "TEXT")
     var processingError: String? = null,
     var createdAt: Long = System.currentTimeMillis(),
     var updatedAt: Long = System.currentTimeMillis(),
