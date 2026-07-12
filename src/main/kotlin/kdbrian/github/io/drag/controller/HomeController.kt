@@ -1,9 +1,12 @@
 package kdbrian.github.io.drag.controller
 
+import jakarta.servlet.http.HttpServletRequest
 import kdbrian.github.io.drag.domain.model.Document
 import kdbrian.github.io.drag.domain.service.DocumentService
+import kdbrian.github.io.drag.security.currentUser
 import kdbrian.github.io.drag.util.paging.PageParameters
 import org.springframework.data.domain.Page
+import org.springframework.security.web.csrf.CsrfToken
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,6 +19,7 @@ class HomeController(
 
     @GetMapping
     fun home(
+        request: HttpServletRequest,
         model: Model
     ): String {
 
@@ -27,6 +31,8 @@ class HomeController(
         )
         model.addAttribute("title", "Dr'_'g")
         model.addAttribute("pages", findAll)
+        model.addAttribute("username", currentUser?.username)
+        model.addAttribute("csrf", request.getAttribute("_csrf") as CsrfToken)
 
         return "index"
     }

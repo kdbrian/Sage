@@ -30,14 +30,13 @@ class AuthService(
         return user.toAuthResponse()
     }
 
-    fun login(request: LoginRequest): AuthResponse {
-        val user = (userRepository.findByUsername(request.usernameOrEmail)
-            ?: userRepository.findByEmail(request.usernameOrEmail))
-            ?.takeIf { passwordEncoder.matches(request.password, it.passwordHash) }
-            ?: throw IllegalArgumentException("Invalid credentials")
+    fun login(request: LoginRequest): AuthResponse = authenticate(request.usernameOrEmail, request.password).toAuthResponse()
 
-        return user.toAuthResponse()
-    }
+    /** Shared by the JSON login endpoint and the JTE app's session-based form login. */
+    fun authenticate(usernameOrEmail: String, password: String): User =
+        (userRepository.findByUsername(usernameOrEmail) ?: userRepository.findByEmail(usernameOrEmail))
+            ?.takeIf { passwordEncoder.matches(password, it.passwordHash) }
+            ?: throw IllegalArgumentException("Invalid credentials")
 
     private fun User.toAuthResponse() = AuthResponse(
         token = jwtService.generate(id, username),

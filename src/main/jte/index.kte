@@ -1,4 +1,5 @@
 @import org.springframework.data.domain.Page
+@import org.springframework.security.web.csrf.CsrfToken
 @import kdbrian.github.io.drag.domain.model.Document
 @import java.time.Instant
 @import java.time.ZoneId
@@ -6,6 +7,8 @@
 
 @param title: String
 @param pages: Page<Document>
+@param username: String?
+@param csrf: CsrfToken
 
 <!doctype html>
 <html lang="en">
@@ -88,6 +91,18 @@
             Every file you upload lands here, catalogued and searchable, so nothing
             gets lost in a folder you'll forget the name of.
         </p>
+
+        @if(username != null)
+            <div class="mt-10 flex items-center gap-3 text-sm text-[#c7cdd4]">
+                <span>Signed in as <span class="text-[#f6f2ea] font-medium">${username}</span></span>
+                <form method="post" action="/logout">
+                    <input type="hidden" name="${csrf.parameterName}" value="${csrf.token}">
+                    <button type="submit" class="underline decoration-[#b08d57] hover:text-[#f6f2ea]">
+                        Sign out
+                    </button>
+                </form>
+            </div>
+        @endif
     </div>
 
     <div class="lg:w-2/5 bg-[#f6f2ea] px-8 py-12 lg:px-12 flex flex-col gap-6">

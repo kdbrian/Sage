@@ -9,12 +9,12 @@ import java.util.*
 
 object FileStoragePathHelper {
 
-    private const val BASE_DIR = "uploads"
     private val ZONE: ZoneId = ZoneId.systemDefault()
 
     /**
-     * Builds directory path like:
-     * uploads/2025/JAN
+     * Builds a directory path like 2025/JAN, relative to the configured
+     * upload root (files.upload.dir already names the "uploads" folder
+     * itself -- prepending another literal "uploads" here double-nests it).
      */
     fun resolveDirectory(timeMillis: Long): Path {
         val dateTime = Instant.ofEpochMilli(timeMillis).atZone(ZONE)
@@ -25,7 +25,7 @@ object FileStoragePathHelper {
             .getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
             .uppercase(Locale.ENGLISH)
 
-        return Paths.get(BASE_DIR, year, month)
+        return Paths.get(year, month)
     }
 
     /**

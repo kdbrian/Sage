@@ -1,0 +1,74 @@
+@import org.springframework.security.web.csrf.CsrfToken
+
+@param title: String
+@param error: Boolean
+@param loggedOut: Boolean
+@param csrf: CsrfToken
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign in | ${title}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet">
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-display {
+            font-family: 'Fraunces', serif;
+        }
+    </style>
+</head>
+<body class="bg-[#f6f2ea] text-[#1b2430] min-h-screen flex items-center justify-center px-6">
+
+<div class="w-full max-w-sm">
+    <p class="uppercase tracking-[0.3em] text-xs text-[#b08d57] mb-3 text-center">Document Archive</p>
+    <h1 class="font-display font-semibold text-4xl text-center mb-8">${title}</h1>
+
+    <div class="bg-white rounded-lg shadow-sm border border-[#e5ddce] p-8">
+
+        @if(error)
+            <div class="mb-4 text-sm text-[#a32d2d] bg-[#fcebeb] border border-[#f0c1c1] rounded-md px-3 py-2">
+                Wrong username/email or password.
+            </div>
+        @endif
+
+        @if(loggedOut)
+            <div class="mb-4 text-sm text-[#1b2430] bg-[#faf7f1] border border-[#e5ddce] rounded-md px-3 py-2">
+                You've been signed out.
+            </div>
+        @endif
+
+        <form method="post" action="/login" class="flex flex-col gap-4">
+            <input type="hidden" name="${csrf.parameterName}" value="${csrf.token}">
+
+            <div>
+                <label class="block text-xs font-medium text-[#5c6773] mb-1">Username or email</label>
+                <input type="text" name="username" required autofocus
+                       class="w-full border border-[#e5ddce] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#b08d57]">
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-[#5c6773] mb-1">Password</label>
+                <input type="password" name="password" required
+                       class="w-full border border-[#e5ddce] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#b08d57]">
+            </div>
+
+            <button type="submit"
+                    class="mt-2 bg-[#b08d57] text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-[#9a7a49] transition-colors">
+                Sign in
+            </button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

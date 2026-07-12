@@ -17,13 +17,15 @@ FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
-RUN groupadd --system spring && useradd --system --gid spring spring
-
-RUN mkdir -p .data/documents && chown -R spring:spring /app
+# Runs as the base image's built-in ubuntu user (1000:1000) rather than a
+# fresh --system account: 1000:1000 is what the host-owned ./uploads bind
+# mount is owned by (see docker-compose.yaml), so a mismatched UID/GID here
+# means writes into it fail with AccessDeniedException.
+RUN mkdir -p .data/documents && chown -R ubuntu:ubuntu /app
 
 COPY --from=builder /app/app.jar .
 
-USER spring
+USER ubuntu
 
 EXPOSE 8080
 

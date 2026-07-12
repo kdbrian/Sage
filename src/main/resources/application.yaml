@@ -48,7 +48,8 @@ spring:
 
 gg:
   jte:
-    developmentMode: true
+    developmentMode: false
+    usePrecompiledTemplates: true
     templateSuffix: .kte
 
 files:

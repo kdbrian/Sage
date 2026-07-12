@@ -1,5 +1,6 @@
 package kdbrian.github.io.drag.resource
 
+import jakarta.validation.Valid
 import kdbrian.github.io.drag.data.impl.AuthService
 import kdbrian.github.io.drag.domain.dto.AuthResponse
 import kdbrian.github.io.drag.domain.dto.LoginRequest
@@ -16,7 +17,7 @@ class AuthController(
 ) {
 
     @PostMapping("/register")
-    fun register(@RequestBody request: RegisterRequest): AuthResponse = authService.register(request)
+    fun register(@Valid @RequestBody request: RegisterRequest): AuthResponse = authService.register(request)
 
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): AuthResponse = authService.login(request)

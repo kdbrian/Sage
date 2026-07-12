@@ -2,6 +2,7 @@ package kdbrian.github.io.drag.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -22,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 //     GraphQlAuthInterceptor authenticates the connection_init payload
 //     instead, and the notifications subscription yields nothing without a
 //     valid token, so no data is exposed.
-private val PUBLIC_PATHS = arrayOf(
+private val API_PUBLIC_PATHS = arrayOf(
     "/api/auth/register",
     "/api/auth/login",
     // Passkey *authentication* is necessarily anonymous (that's the whole
@@ -38,6 +39,10 @@ private val PUBLIC_PATHS = arrayOf(
     "/error",
 )
 
+private val API_MATCHERS = arrayOf(
+    "/api/**", "/graphql", "/graphql-ws", "/graph", "/actuator/**", "/scalar/**", "/v3/api-docs/**", "/error",
+)
+
 @Configuration
 class SecurityConfig(
     private val jwtAuthFilter: JwtAuthFilter,
@@ -48,18 +53,50 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
+    // Token-based clients only (mobile, external JS, curl, GraphiQL). Stateless,
+    // no sessions, no CSRF -- nothing here rides a cookie, so nothing here is
+    // CSRF-exposed. Left entirely as-is by the JTE login work below: that's a
+    // separate chain (see webFilterChain) so existing API clients see zero
+    // behavior change.
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    @Order(1)
+    fun apiFilterChain(http: HttpSecurity): SecurityFilterChain {
         http {
+            securityMatcher(*API_MATCHERS)
             csrf { disable() }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             authorizeHttpRequests {
-                PUBLIC_PATHS.forEach { authorize(it, permitAll) }
+                API_PUBLIC_PATHS.forEach { authorize(it, permitAll) }
                 authorize(anyRequest, authenticated)
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtAuthFilter)
             addFilterAfter<JwtAuthFilter>(apiKeyAuthFilter)
             addFilterAfter<ApiKeyAuthFilter>(rateLimitFilter)
+        }
+        return http.build()
+    }
+
+    // Everything else: the server-rendered JTE app. Ordinary session-cookie
+    // login, CSRF left ON (default) since this one *does* ride a cookie.
+    // DomainAuthenticationProvider backs the credential check.
+    @Bean
+    @Order(2)
+    fun webFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http {
+            authorizeHttpRequests {
+                authorize("/login", permitAll)
+                authorize(anyRequest, authenticated)
+            }
+            formLogin {
+                loginPage = "/login"
+                defaultSuccessUrl("/", true)
+                failureUrl = "/login?error"
+            }
+            logout {
+                logoutUrl = "/logout"
+                logoutSuccessUrl = "/login?logout"
+                deleteCookies("JSESSIONID")
+            }
         }
         return http.build()
     }
